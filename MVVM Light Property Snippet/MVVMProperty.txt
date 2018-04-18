@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>MVVM Property</Title>
+      <Shortcut>propl</Shortcut>
+      <Author>Wawrzyn321</Author>
+      <Description>Property using MVVM Light's Set()</Description>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>type</ID>
+          <ToolTip>Property type</ToolTip>
+          <Default>VAR</Default>
+        </Literal>
+        <Literal>
+          <ID>PropertyName</ID>
+          <ToolTip>Property name</ToolTip>
+          <Default>propertyName</Default>
+        </Literal>
+        <Literal>
+          <ID>fieldName</ID>
+          <ToolTip>Field name</ToolTip>
+          <Default>fieldName</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp">
+        <![CDATA[private $type$ $fieldName$;
+
+        public $type$ $PropertyName$
+        {
+            get { return this.$fieldName$; }
+            set { Set(ref $fieldName$, value); }
+        }$selected$ $end$]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
