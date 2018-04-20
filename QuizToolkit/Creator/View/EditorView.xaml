@@ -1,0 +1,139 @@
+﻿<UserControl x:Class="Creator.View.EditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Creator.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.4*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid
+            Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Button
+                Content="SAVE"
+                Command="{Binding SaveCommand}"/>
+
+
+            <Grid
+                Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    Background="White">
+                    <CheckBox
+                        x:Name="TimeLimitCheckBox"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="USE TIME LIMIT"
+                        IsChecked="{Binding QuestionsSet.HasTimeLimit}"/>
+                </Border>
+
+                <TextBox
+                    Grid.Column="1"
+                    Text="{Binding QuestionsSet.TimeLimit}"
+                    IsEnabled="{Binding ElementName=TimeLimitCheckBox, Path=IsChecked}"/>
+            </Grid>
+
+        </Grid>
+
+        <Grid
+            Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+
+            <ListView
+                ItemsSource="{Binding QuestionsSet.Questions}"
+                SelectedItem="{Binding SelectedQuestion}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock 
+                            FontSize="25"
+                            Text="{Binding QuestionText}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Button
+                Grid.Row="1"
+                Content="ADD"
+                Command="{Binding AddQuestionCommand}"/>
+
+            <Button
+                Grid.Row="2"
+                Content="DELETE"
+                Command="{Binding DeleteQuestionCommand}"/>
+        </Grid>
+
+        <Grid
+            Grid.Row="1"
+            Grid.Column="1">
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+
+            <Border
+                Background="White"
+                BorderThickness="1"
+                BorderBrush="Black">
+                <TextBox 
+                    FontSize="28"
+                    VerticalAlignment="Center"
+                    Text="{Binding SelectedQuestion.QuestionText, UpdateSourceTrigger=PropertyChanged}"/>
+            </Border>
+            
+            <ListView 
+                Grid.Row="1"
+                ItemsSource="{Binding SelectedQuestion.Answers}"
+                SelectedItem="{Binding SelectedAnswer}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel
+                            Orientation="Horizontal">
+                            <TextBox 
+                                Text="{Binding AnswerText}"
+                                FontSize="20"
+                                Margin="0,0,10,0"/>
+                            <CheckBox 
+                                VerticalAlignment="Center"
+                                IsChecked="{Binding IsValid}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Button
+                Grid.Row="2"
+                Content="ADD"
+                Command="{Binding AddAnswerCommand}"/>
+
+            <Button
+                Grid.Row="3"
+                Content="DELETE"
+                Command="{Binding DeleteAnswerCommand}"/>
+        </Grid>
+    </Grid>
+</UserControl>

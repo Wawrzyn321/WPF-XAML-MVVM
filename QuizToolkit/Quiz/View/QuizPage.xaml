@@ -1,0 +1,168 @@
+﻿<UserControl
+    x:Class="Quiz.QuizPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:quizView="clr-namespace:Quiz.View"
+    d:DesignHeight="600"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <quizView:IndexConverter x:Key="indexConverter" />
+        <quizView:AnswerPageColorConverter x:Key="answerPageColorConverter" />
+        <quizView:ImageStatusConverter x:Key="imageStatusConverter" />
+        <quizView:BooleanToWeightConverter x:Key="booleanToWeightConverter" />
+        <quizView:AnswerStateToBooleanConverter x:Key="answerStateToBooleanConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="8*" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.ColumnSpan="2">
+                <!--  Header  -->
+                <Rectangle Fill="{StaticResource mainColorBrush}" />
+                <TextBlock
+                    Name="tbQuizTitle"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="48"
+                    Foreground="{StaticResource titleTextBrush}"
+                    Text="quiz title" />
+            </Grid>
+            <Grid Grid.Row="1" Grid.Column="0">
+                <!--  LeftPanel  -->
+                <Rectangle Fill="{StaticResource mainColorBrush}" />
+                <ListView
+                    Name="lb_Left"
+                    Margin="10"
+                    Background="{StaticResource secondaryColorBrush}"
+                    MouseDoubleClick="lbLeft_OnMouseDoubleClick">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Rectangle Width="190" Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource answerPageColorConverter}}" />
+                                <StackPanel VerticalAlignment="Stretch">
+                                    <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource indexConverter}}" />
+                                    <TextBlock
+                                        HorizontalAlignment="Stretch"
+                                        FontWeight="Bold"
+                                        Text="{Binding QuestionText}"
+                                        TextTrimming="WordEllipsis"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+            <Grid Grid.Row="1" Grid.Column="1">
+                <!--  RightPanel  -->
+                <Rectangle Fill="{StaticResource mainColorBrush}" />
+                <ScrollViewer Margin="-1,-1,1,1" VerticalScrollBarVisibility="Auto">
+                    <ListView
+                        Name="lb_Right"
+                        Margin="0,10"
+                        Background="{StaticResource secondaryColorBrush}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Focusable" Value="False" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Rectangle
+                                        Width="500"
+                                        Margin="-100,0"
+                                        Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource answerPageColorConverter}}" />
+                                    <WrapPanel>
+                                        <Image
+                                            Width="24"
+                                            Height="24"
+                                            Source="{Binding QuestionState, Converter={StaticResource imageStatusConverter}}" />
+                                        <StackPanel VerticalAlignment="Stretch">
+                                            <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource indexConverter}}" />
+                                            <TextBlock FontWeight="Bold" Text="{Binding QuestionText}" />
+                                            <ListView
+                                                Margin="10"
+                                                Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.QuestionState, Converter={StaticResource answerPageColorConverter}}"
+                                                ItemsSource="{Binding Answers}">
+                                                <ListView.ItemContainerStyle>
+                                                    <Style TargetType="{x:Type ListBoxItem}">
+                                                        <Setter Property="Focusable" Value="False" />
+                                                        <Setter Property="Width" Value="350" />
+                                                    </Style>
+                                                </ListView.ItemContainerStyle>
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <ListViewItem>
+                                                            <WrapPanel>
+                                                                <CheckBox
+                                                                    Margin="4"
+                                                                    IsChecked="{Binding IsChecked}"
+                                                                    IsEnabled="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.QuestionState, Converter={StaticResource answerStateToBooleanConverter}}" />
+                                                                <TextBlock
+                                                                    Name="A"
+                                                                    Width="250"
+                                                                    Margin="4"
+                                                                    FontWeight="{Binding ShouldBeChecked, Converter={StaticResource booleanToWeightConverter}}"
+                                                                    Text="{Binding AnswerText}"
+                                                                    TextWrapping="Wrap" />
+                                                            </WrapPanel>
+                                                        </ListViewItem>
+
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                            </ListView>
+                                        </StackPanel>
+                                    </WrapPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </ScrollViewer>
+            </Grid>
+            <Grid
+                Grid.Row="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="2">
+                <!--  Footer  -->
+                <Rectangle Fill="{StaticResource mainColorBrush}" />
+                <Button
+                    Width="120"
+                    Height="40"
+                    Margin="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Click="btnBack_Click">
+                    Return to Menu
+                </Button>
+                <TextBlock
+                    Name="tbTimer"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="20"
+                    Foreground="{StaticResource titleTextBrush}"
+                    Text="timer" />
+                <Button
+                    Name="btnRight"
+                    Width="120"
+                    Height="40"
+                    Margin="20"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Click="btnRight_Click">
+                    Finish test
+                </Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

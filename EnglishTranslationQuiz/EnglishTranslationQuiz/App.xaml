@@ -29,22 +29,4 @@
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
-
-    <!--<Application.Resources>
-        <ResourceDictionary x:Key="Dictionar">
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Graphics/MainStyle.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-
-        <view:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
-
-        <DataTemplate DataType="{x:Type view:StartupViewModel}">
-            <view1:StartupView />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type view:QuizViewModel}">
-            <view1:QuizView />
-        </DataTemplate>
-    </Application.Resources>-->
-
 </Application>

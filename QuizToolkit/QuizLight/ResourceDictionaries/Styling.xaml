@@ -1,0 +1,21 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:pres="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+    <SolidColorBrush
+        x:Key="mainColorBrush"
+        pres:Freeze="True"
+        Color="White" />
+    <SolidColorBrush
+        x:Key="secondaryColorBrush"
+        pres:Freeze="True"
+        Color="FloralWhite" />
+    <SolidColorBrush
+        x:Key="secondaryColorDarkerBrush"
+        pres:Freeze="True"
+        Color="AntiqueWhite" />
+    <SolidColorBrush
+        x:Key="titleTextBrush"
+        pres:Freeze="True"
+        Color="Black" />
+</ResourceDictionary>
