@@ -157,9 +157,9 @@ namespace QuizLight.ViewModel
 
         private void ShowResults()
         {
-            double score = Math.Round(100.0 * CorrectQuestionsCount / questionSet.Questions.Count, 2);
+            float validAnswersRatio = CorrectQuestionsCount / (float)questionSet.Questions.Count;
             char fin = CorrectQuestionsCount == questionSet.Questions.Count ? '?' : '.';
-            MessageBox.Show($"{Properties.Resources.ScoreMessage} {score} %{fin}");
+            MessageBox.Show($"{Properties.Resources.ScoreMessage} {validAnswersRatio:P2}{fin}");
         }
 
         public static void CreateTestSet()
