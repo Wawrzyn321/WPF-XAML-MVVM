@@ -36,8 +36,8 @@
                        Canvas.Left="{Binding StartX}"
                        Canvas.Top="{Binding StartY}"
                        Panel.ZIndex="2" Fill="#4488AAFF" 
-                       Width="{Binding Widthh}"
-                       Height="{Binding Heighht}" />
+                       Width="{Binding Width}"
+                       Height="{Binding Height}" />
         </Canvas>
 
         <Grid Grid.Row="1">

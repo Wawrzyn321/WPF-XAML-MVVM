@@ -11,18 +11,18 @@ namespace ImageSelectionInfo.Model
     {
         #region Observed Properties
 
-        private double widthh;
-        public double Widthh
+        private double width;
+        public double Width
         {
-            get => widthh;
-            set => Set(ref widthh, value);
+            get => width;
+            set => Set(ref width, value);
         }
 
-        private double heighht;
-        public double Heighht
+        private double height;
+        public double Height
         {
-            get => heighht;
-            set => Set(ref heighht, value);
+            get => height;
+            set => Set(ref height, value);
         }
 
         private DateTime date;
@@ -142,9 +142,9 @@ namespace ImageSelectionInfo.Model
 
         private void SetSize(double _width, double _height)
         {
-            Widthh = _width;
-            Heighht = _height;
-            Area = Widthh * Heighht;
+            Width = _width;
+            Height = _height;
+            Area = Width * Height;
             Date = StartDate.AddDays(Area);
         }
 
