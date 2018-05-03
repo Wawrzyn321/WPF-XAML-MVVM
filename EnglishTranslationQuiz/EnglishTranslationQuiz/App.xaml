@@ -17,8 +17,6 @@
                 <ResourceDictionary Source="View/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <SolidColorBrush x:Key="greeting" />
-
             <view:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
 
             <DataTemplate DataType="{x:Type view:StartupViewModel}">
