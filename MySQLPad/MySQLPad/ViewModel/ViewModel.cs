@@ -48,8 +48,8 @@ namespace MySQLPad.ViewModel
             set => Set(ref connections, value);
         }
 
-        private DatabaseConnection currentConnection;
-        public DatabaseConnection CurrentConnection
+        private MySQLDatabaseConnection currentConnection;
+        public MySQLDatabaseConnection CurrentConnection
         {
             get => currentConnection;
             set => Set(ref currentConnection, value);
@@ -162,7 +162,7 @@ namespace MySQLPad.ViewModel
         }
 
         //add new connection
-        public bool AddDatabaseConnection(DatabaseConnection newConnection, bool setAsCurrent)
+        public bool AddDatabaseConnection(MySQLDatabaseConnection newConnection, bool setAsCurrent)
         {
             DatabaseBranch databaseDescription = newConnection.GetDatabaseDescription();
             if (!DatabasesTree.Contains(databaseDescription))
@@ -341,7 +341,7 @@ namespace MySQLPad.ViewModel
         #region View Event Callbacks
 
         //choose DB as current
-        private void ChooseDatabase(DatabaseConnection choosenDatabase)
+        private void ChooseDatabase(MySQLDatabaseConnection choosenDatabase)
         {
             foreach (IMenuItem connection in Connections)
             {

@@ -17,10 +17,10 @@ namespace Model
 
         public HeaderBranch Tables { get; }
         public HeaderBranch Views { get; }
-        public DatabaseConnection ConnectionReference { get; }
+        public MySQLDatabaseConnection ConnectionReference { get; }
         public ObservableCollection<HeaderBranch> TablesAndViews { get; } //tables and views are separated here
 
-        public DatabaseBranch(string databaseName, ObservableCollection<TableBranch> tables, ObservableCollection<TableBranch> views, DatabaseConnection connection)
+        public DatabaseBranch(string databaseName, ObservableCollection<TableBranch> tables, ObservableCollection<TableBranch> views, MySQLDatabaseConnection connection)
         {
             Tables = new HeaderBranch("Tables", tables);
             Views = new HeaderBranch("Views", views);

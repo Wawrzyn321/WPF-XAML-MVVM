@@ -38,7 +38,7 @@
   <ItemGroup>
     <Compile Include="ColumnDescription.cs" />
     <Compile Include="DatabaseBranch.cs" />
-    <Compile Include="DatabaseConnection.cs" />
+    <Compile Include="MySQLDatabaseConnection.cs" />
     <Compile Include="DatabaseHelper.cs" />
     <Compile Include="DataTableSerializer.cs" />
     <Compile Include="ExternalTimerDispatcher.cs" />

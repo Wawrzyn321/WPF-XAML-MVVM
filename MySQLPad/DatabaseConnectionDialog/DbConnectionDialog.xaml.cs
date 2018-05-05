@@ -12,7 +12,7 @@ namespace DatabaseConnectionDialog
     {
         public event Action<SecureString> OnConnectButtonClicked;
 
-        public DatabaseConnection Connection { get; private set; }
+        public MySQLDatabaseConnection Connection { get; private set; }
         public bool SetAsCurrent { get; private set; }
 
         public DbConnectionDialog()
@@ -29,7 +29,7 @@ namespace DatabaseConnectionDialog
             OnConnectButtonClicked?.Invoke(password);
         }
 
-        public void ReturnToCaller(DatabaseConnection connection, bool setAsCurrent)
+        public void ReturnToCaller(MySQLDatabaseConnection connection, bool setAsCurrent)
         {
             Connection = connection;
             SetAsCurrent = setAsCurrent;

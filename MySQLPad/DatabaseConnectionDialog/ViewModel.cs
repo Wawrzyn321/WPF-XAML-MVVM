@@ -69,7 +69,7 @@ namespace DatabaseConnectionDialog
 
             try
             {
-                DatabaseConnection connection = new DatabaseConnection(Server, Database, UserID, 
+                MySQLDatabaseConnection connection = new MySQLDatabaseConnection(Server, Database, UserID, 
                     SecureStringUtility.SecureStringToString(str));
 
                 if (connection.IsAvailable == false)

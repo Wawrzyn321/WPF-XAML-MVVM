@@ -13,7 +13,7 @@ namespace Model
     /// <summary>
     /// Handler for database connection.
     /// </summary>
-    public class DatabaseConnection : ImplementsPropertyChanged, IDisposable, IMenuItem
+    public class MySQLDatabaseConnection : ImplementsPropertyChanged, IDisposable, IMenuItem
     {
         #region IMenuItem Members
 
@@ -54,7 +54,7 @@ namespace Model
         private readonly ExternalTimeDispatcher connectionCheck;
         private const string tableType_View = "VIEW";
 
-        public DatabaseConnection(string server, string database, string userId, string password)
+        public MySQLDatabaseConnection(string server, string database, string userId, string password)
         {
             Server = server;
             Database = database;

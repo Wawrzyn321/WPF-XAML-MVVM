@@ -21,7 +21,7 @@ namespace MySQLPad.View
         event Action<TabContent> OnExportTabCSVRequested;
 
         //change current DB
-        event Action<DatabaseConnection> OnDatabaseChoiceRequested;
+        event Action<MySQLDatabaseConnection> OnDatabaseChoiceRequested;
 
         //close results tabs
         event Action OnCloseAllTabsRequested;
