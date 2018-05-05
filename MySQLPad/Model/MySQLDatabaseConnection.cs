@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Common;
-using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
-
-//https://github.com/JaCraig/SQLParser/blob/master/LICENSE
 
 namespace Model
 {
@@ -16,7 +13,6 @@ namespace Model
     /// </summary>
     public sealed class MySQLDatabaseConnection : DatabaseConnection
     {
-        private MySqlConnection connection;
 
         public MySQLDatabaseConnection(string server, string database, string userId, string password)
         {
@@ -33,6 +29,11 @@ namespace Model
             connectionCheck = new ExternalTimeDispatcher(this);
         }
 
+        protected override DbCommand CreateCommand(string query)
+        {
+            return new MySqlCommand(query, (MySqlConnection)connection);
+        }
+
         protected override void CreateConnection()
         {
             string connectionString = $"server={Server};database={Database};uid={UserId};pwd={password};sslmode=none";
@@ -41,79 +42,9 @@ namespace Model
             IsAvailable = OpenConnection();
         }
 
-        public override bool CheckAvailability()
+        public override bool Ping()
         {
-            bool canPing;
-            try
-            {
-                canPing = connection.Ping();
-            }
-            catch (MySqlException)
-            {
-                //ignore
-                return false;
-            }
-
-            //try to reconnect
-            if (!canPing)
-            {
-                connection.Close();
-                IsAvailable = OpenConnection();
-            }
-
-            return IsAvailable;
-        }
-
-        public override bool OpenConnection()
-        {
-            try
-            {
-                connection.Open();
-                return true;
-            }
-            catch (MySqlException ex)
-            {
-                switch (ex.Number)
-                {
-                    case 0:
-                    case 1042:
-                        LastError = "Cannot connect to server.  Contact administrator";
-                        LastErrorCode = 0;
-                        break;
-                    case 1045:
-                        LastError = "Invalid username/password, please try again";
-                        LastErrorCode = 1045;
-                        break;
-                    default:
-                        LastError = "Unknown";
-                        LastErrorCode = ex.Number;
-                        break;
-                }
-                return false;
-            }
-            catch (InvalidOperationException)
-            {
-                //ignore
-                return true;
-            }
-        }
-
-        public override bool CloseConnection(bool disableDispatcher = false)
-        {
-            if (disableDispatcher)
-            {
-                connectionCheck.Stop();
-            }
-
-            try
-            {
-                connection.Close();
-                return true;
-            }
-            catch (MySqlException)
-            {
-                return false;
-            }
+            return ((MySqlConnection) connection).Ping();
         }
 
         public override DatabaseBranch GetDatabaseDescription()
@@ -171,63 +102,5 @@ namespace Model
             return result;
         }
 
-        //DELETE, UPDATE and DELETE statements (Select also, but won't return any records)
-        public override int ExecuteStatement(string query)
-        {
-            if (!CheckAvailability())
-            {
-                throw new InvalidOperationException("Database is unavailable!");
-            }
-
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-            int rows = cmd.ExecuteNonQuery();
-            return rows;
-        }
-
-        //SELECT
-        public override ResultContainer Select(string query)
-        {
-            if (!CheckAvailability() && connection.State!=ConnectionState.Open)
-            {
-                throw new InvalidOperationException("Database is unavailable!");
-            }
-
-            List<string[]> results = new List<string[]>();
-
-            if (string.IsNullOrEmpty(query))
-            {
-                return new ResultContainer();
-            }
-
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-            List<DbColumn> schema;
-            using (MySqlDataReader dataReader = cmd.ExecuteReader())
-            {
-                schema = new List<DbColumn>(dataReader.GetColumnSchema());
-
-                while (dataReader.Read())
-                {
-                    results.Add(new string[schema.Count]);
-                    for (int i = 0; i < schema.Count; i++)
-                    {
-                        //assign data to last added element
-                        results[results.Count - 1][i] = dataReader[schema[i].ColumnName].ToString();
-                    }   
-                }
-
-                dataReader.Close();
-            }
-
-            return new ResultContainer("Query result", Database, schema, results);
-        }
-
-        public override void Dispose()
-        {
-            connectionCheck.Stop();
-            CloseConnection();
-            connection?.Dispose();
-        }
-
     }
-
 }

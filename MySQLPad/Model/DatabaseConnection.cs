@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 
 namespace Model
@@ -58,35 +59,147 @@ namespace Model
         protected ExternalTimeDispatcher connectionCheck;
         protected const string tableType_View = "VIEW";
 
+        protected DbConnection connection;
 
-        //must
+
+        protected abstract DbCommand CreateCommand(string query);
+
         protected abstract void CreateConnection();
 
-        //!must, ale dodaj Ping
-        public abstract bool CheckAvailability();
+        public abstract bool Ping();
 
-        //!must, zamiast sqlexception dbexception
-        public abstract bool OpenConnection();
-
-        //!must, zamiast sqlexception dbexception
-        public abstract bool CloseConnection(bool disableDispatcher = false);
-
-        //must
-        public abstract DatabaseBranch GetDatabaseDescription();
-
-        //must
         public abstract List<ColumnDescription> GetTableDescription(string tableName);
 
-        //!must, zamiana na DBReader
-        public abstract ResultContainer Select(string query);
-
-        //!must, zamiana na DBReader
-        public abstract int ExecuteStatement(string query);
-
-        //!must
-        public abstract void Dispose();
+        public abstract DatabaseBranch GetDatabaseDescription();
 
 
+        public virtual bool CheckAvailability() {
+            bool canPing;
+            try
+            {
+                canPing = Ping();
+            }
+            catch (DbException)
+            {
+                //ignore
+                return false;
+            }
+
+            //try to reconnect
+            if (!canPing)
+            {
+                connection.Close();
+                IsAvailable = OpenConnection();
+            }
+
+            return IsAvailable;
+        }
+
+        public virtual bool OpenConnection()
+        {
+            try
+            {
+                connection.Open();
+                return true;
+            }
+            catch (DbException ex)
+            {
+                switch (ex.ErrorCode)
+                {
+                    case 0:
+                    case 1042:
+                        LastError = "Cannot connect to server.  Contact administrator";
+                        LastErrorCode = 0;
+                        break;
+                    case 1045:
+                        LastError = "Invalid username/password, please try again";
+                        LastErrorCode = 1045;
+                        break;
+                    default:
+                        LastError = "Unknown";
+                        LastErrorCode = ex.ErrorCode;
+                        break;
+                }
+                return false;
+            }
+            catch (InvalidOperationException)
+            {
+                //ignore
+                return true;
+            }
+        }
+
+        public virtual bool CloseConnection(bool disableDispatcher = false)
+        {
+            if (disableDispatcher)
+            {
+                connectionCheck.Stop();
+            }
+
+            try
+            {
+                connection.Close();
+                return true;
+            }
+            catch (DbException)
+            {
+                return false;
+            }
+        }
+
+        public virtual ResultContainer Select(string query)
+        {
+            if (!CheckAvailability() && connection.State != ConnectionState.Open)
+            {
+                throw new InvalidOperationException("Database is unavailable!");
+            }
+
+            List<string[]> results = new List<string[]>();
+
+            if (string.IsNullOrEmpty(query))
+            {
+                return new ResultContainer();
+            }
+
+            var cmd = CreateCommand(query);
+            List<DbColumn> schema;
+            using (DbDataReader dataReader = cmd.ExecuteReader())
+            {
+                schema = new List<DbColumn>(dataReader.GetColumnSchema());
+
+                while (dataReader.Read())
+                {
+                    results.Add(new string[schema.Count]);
+                    for (int i = 0; i < schema.Count; i++)
+                    {
+                        //assign data to last added element
+                        results[results.Count - 1][i] = dataReader[schema[i].ColumnName].ToString();
+                    }
+                }
+
+                dataReader.Close();
+            }
+
+            return new ResultContainer("Query result", Database, schema, results);
+        }
+
+        public virtual int ExecuteStatement(string query)
+        {
+            if (!CheckAvailability())
+            {
+                throw new InvalidOperationException("Database is unavailable!");
+            }
+            ;
+            var cmd = CreateCommand(query);
+            return cmd.ExecuteNonQuery();
+        }
+
+        public virtual void Dispose()
+        {
+            connectionCheck.Stop();
+            CloseConnection();
+            connection?.Dispose();
+        }
 
         public override string ToString()
         {
