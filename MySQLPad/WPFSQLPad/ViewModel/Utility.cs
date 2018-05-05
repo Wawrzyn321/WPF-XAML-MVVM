@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MySQLPad.ViewModel
+namespace WPFSQLPad.ViewModel
 {
     public static class Utility
     {

@@ -2,9 +2,9 @@
 using System.Windows;
 using System.Windows.Input;
 using Model;
-using MySQLPad.View;
+using WPFSQLPad.View;
 
-namespace MySQLPad
+namespace WPFSQLPad
 {
 
     /// <summary>
@@ -17,7 +17,7 @@ namespace MySQLPad
         public event Action<TabContent> OnCloseTabRequested;
         public event Action<TabContent> OnExportTabXMLRequested;
         public event Action<TabContent> OnExportTabCSVRequested;
-        public event Action<MySQLDatabaseConnection> OnDatabaseChoiceRequested;
+        public event Action<DatabaseConnection> OnDatabaseChoiceRequested;
         public event Action OnCloseAllTabsRequested;
 
         private readonly ViewModel.ViewModel viewModel;
@@ -40,7 +40,7 @@ namespace MySQLPad
 
         private void InitializeCommands()
         {
-            ChooseDatabaseCommand = new ActionCommand<MySQLDatabaseConnection>(content => OnDatabaseChoiceRequested?.Invoke(content));
+            ChooseDatabaseCommand = new ActionCommand<DatabaseConnection>(content => OnDatabaseChoiceRequested?.Invoke(content));
             CloseTabCommand = new ActionCommand<TabContent>(content => OnCloseTabRequested?.Invoke(content));
             ExportTabXMLCommand = new ActionCommand<TabContent>(content => OnExportTabXMLRequested?.Invoke(content));
             ExportTabCSVCommand = new ActionCommand<TabContent>(content => OnExportTabCSVRequested?.Invoke(content));

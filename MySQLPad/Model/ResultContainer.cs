@@ -10,6 +10,10 @@ namespace Model
     /// Structure of data returned by
     /// SELECT-like statement.
     /// </summary>
+    ///
+    ///
+    ///
+    /// todo add transform(int row) returning column
     public struct ResultContainer
     {
         public List<DbColumn> Columns;

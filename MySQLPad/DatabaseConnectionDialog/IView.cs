@@ -13,6 +13,6 @@ namespace DatabaseConnectionDialog
         event Action<SecureString> OnConnectButtonClicked;
 
         //finalize and close
-        void ReturnToCaller(MySQLDatabaseConnection connection, bool setAsCurrent);
+        void ReturnToCaller(DatabaseConnection connection, bool setAsCurrent);
     }
 }

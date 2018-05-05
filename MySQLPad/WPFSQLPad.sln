@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseConnectionDialog", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{9164A62D-CAAF-4CAF-BC9A-8A8A73D09F59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySQLPad", "MySQLPad\MySQLPad.csproj", "{F9121280-E814-4C85-AB1E-9E976D1F4C03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFSQLPad", "WPFSQLPad\WPFSQLPad.csproj", "{F9121280-E814-4C85-AB1E-9E976D1F4C03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

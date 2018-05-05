@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace MySQLPad.View
+namespace WPFSQLPad.View
 {
 
     /// <summary>

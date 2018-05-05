@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using System;
+using MySql.Data.MySqlClient;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security;
@@ -15,6 +16,13 @@ namespace DatabaseConnectionDialog
     {
 
         #region Observed Properties
+
+        private DbType databaseType;
+        public DbType DatabaseType
+        {
+            get => databaseType;
+            set => Set(ref databaseType, value);
+        }
 
         private string server;
         public string Server
@@ -69,8 +77,7 @@ namespace DatabaseConnectionDialog
 
             try
             {
-                MySQLDatabaseConnection connection = new MySQLDatabaseConnection(Server, Database, UserID, 
-                    SecureStringUtility.SecureStringToString(str));
+                DatabaseConnection connection = ConnectFucker(str);
 
                 if (connection.IsAvailable == false)
                 {
@@ -96,6 +103,24 @@ namespace DatabaseConnectionDialog
                         MessageBox.Show($"Unknown error: {e.Message}, code: {e.ErrorCode}", "SQL Pad");
                         break;
                 }
+            }
+        }
+
+        private DatabaseConnection ConnectFucker(SecureString str)
+        {
+            if (DatabaseType == DbType.MySQL)
+            {
+                return new MySQLDatabaseConnection(Server, Database, UserID,
+                    SecureStringUtility.SecureStringToString(str));
+            }
+            else if (DatabaseType == DbType.SQLServer)
+            {
+                return new SQLServerDatabaseConnection(Server, Database, UserID,
+                    SecureStringUtility.SecureStringToString(str));
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
 

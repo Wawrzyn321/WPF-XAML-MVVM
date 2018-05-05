@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="ColumnDescription.cs" />
     <Compile Include="DatabaseBranch.cs" />
+    <Compile Include="DatabaseConnection.cs" />
     <Compile Include="MySQLDatabaseConnection.cs" />
     <Compile Include="DatabaseHelper.cs" />
     <Compile Include="DataTableSerializer.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="MenuItemPlaceholder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ResultContainer.cs" />
+    <Compile Include="SQLServerDatabaseConnection.cs" />
     <Compile Include="TableBranch.cs" />
   </ItemGroup>
   <ItemGroup>

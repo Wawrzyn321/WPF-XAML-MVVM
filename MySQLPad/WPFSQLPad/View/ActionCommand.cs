@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace MySQLPad.View
+namespace WPFSQLPad.View
 {
     /// <summary>
     /// ICommand implementation

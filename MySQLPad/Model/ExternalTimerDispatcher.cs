@@ -10,11 +10,11 @@ namespace Model
     public class ExternalTimeDispatcher
     {
         private readonly DispatcherTimer dispatcherTimer;
-        private readonly MySQLDatabaseConnection databaseReference;
+        private readonly DatabaseConnection databaseReference;
 
         private const double refreshInterval = 2.0;
 
-        public ExternalTimeDispatcher(MySQLDatabaseConnection databaseReference)
+        public ExternalTimeDispatcher(DatabaseConnection databaseReference)
         {
             this.databaseReference = databaseReference;
 

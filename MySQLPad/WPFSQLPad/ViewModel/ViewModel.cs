@@ -8,9 +8,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Model;
-using MySQLPad.View;
+using WPFSQLPad.View;
 
-namespace MySQLPad.ViewModel
+namespace WPFSQLPad.ViewModel
 {
 
     /// <summary>
@@ -48,8 +48,8 @@ namespace MySQLPad.ViewModel
             set => Set(ref connections, value);
         }
 
-        private MySQLDatabaseConnection currentConnection;
-        public MySQLDatabaseConnection CurrentConnection
+        private DatabaseConnection currentConnection;
+        public DatabaseConnection CurrentConnection
         {
             get => currentConnection;
             set => Set(ref currentConnection, value);
@@ -162,7 +162,7 @@ namespace MySQLPad.ViewModel
         }
 
         //add new connection
-        public bool AddDatabaseConnection(MySQLDatabaseConnection newConnection, bool setAsCurrent)
+        public bool AddDatabaseConnection(DatabaseConnection newConnection, bool setAsCurrent)
         {
             DatabaseBranch databaseDescription = newConnection.GetDatabaseDescription();
             if (!DatabasesTree.Contains(databaseDescription))
@@ -318,6 +318,7 @@ namespace MySQLPad.ViewModel
         {
             Clipboard.SetText(Log);
             logger.WriteLine("Log has been copied to clipboard.");
+            Log = logger.Flush();
         }
 
         //remove connection using "Remove connection" button
@@ -341,7 +342,7 @@ namespace MySQLPad.ViewModel
         #region View Event Callbacks
 
         //choose DB as current
-        private void ChooseDatabase(MySQLDatabaseConnection choosenDatabase)
+        private void ChooseDatabase(DatabaseConnection choosenDatabase)
         {
             foreach (IMenuItem connection in Connections)
             {
@@ -351,7 +352,7 @@ namespace MySQLPad.ViewModel
             choosenDatabase.IsChoosen = true;
             CurrentConnection = choosenDatabase;
 
-            logger.WriteLine($"\nSet database to {choosenDatabase.Description}.");
+            logger.WriteLine($"Set database to {choosenDatabase.Description}.");
             Log = logger.Flush();
         }
 

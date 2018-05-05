@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace MySQLPad
+namespace WPFSQLPad
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace MySQLPad.ViewModel
+namespace WPFSQLPad.ViewModel
 {
     /// <summary>
     /// Class responsible for writing to log.

@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using Model;
 
-namespace MySQLPad.View
+namespace WPFSQLPad.View
 {
     /// <summary>
     /// A content for TabControl.

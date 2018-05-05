@@ -4,7 +4,7 @@ namespace Model
 {
     /// <summary>
     /// Description of DB column filled with properties
-    /// from result of DESC query.
+    /// from result of DESC-like query.
     /// </summary>
     public class ColumnDescription : ImplementsPropertyChanged
     {

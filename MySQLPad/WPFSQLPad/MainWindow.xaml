@@ -1,5 +1,5 @@
 ﻿<Window
-    x:Class="MySQLPad.MainWindow"
+    x:Class="WPFSQLPad.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
@@ -7,10 +7,10 @@
     xmlns:data="clr-namespace:System.Data;assembly=System.Data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:Model;assembly=Model"
-    xmlns:wpfPad="clr-namespace:MySQLPad"
-    xmlns:view="clr-namespace:MySQLPad.View"
+    xmlns:view="clr-namespace:WPFSQLPad.View"
+    xmlns:wpfPad="clr-namespace:WPFSQLPad"
     x:Name="WPFWindow"
-    Title="MainWindow"
+    Title="WPF SQLPad"
     Width="900"
     Height="600"
     mc:Ignorable="d">

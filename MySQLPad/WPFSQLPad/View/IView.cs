@@ -1,7 +1,7 @@
 ﻿using System;
 using Model;
 
-namespace MySQLPad.View
+namespace WPFSQLPad.View
 {
     /// <summary>
     /// View contract for Pad.
@@ -21,7 +21,7 @@ namespace MySQLPad.View
         event Action<TabContent> OnExportTabCSVRequested;
 
         //change current DB
-        event Action<MySQLDatabaseConnection> OnDatabaseChoiceRequested;
+        event Action<DatabaseConnection> OnDatabaseChoiceRequested;
 
         //close results tabs
         event Action OnCloseAllTabsRequested;
