@@ -5,25 +5,22 @@ namespace Model
 {
     /// <summary>
     /// Branch model for TreeView with name
-    /// and collection of ColumnDescription.
+    /// Used for Tables and views.
     /// </summary>
-    public class TableBranch : ImplementsPropertyChanged
+    public class TableBranch : TreeItem
     {
-        private string tableName;
-        public string TableName
-        {
-            get => tableName;
-            set => Set(ref tableName, value);
-        } 
+        public string TableName { get; }
         public ObservableCollection<ColumnDescription> Columns { get; }
 
-        public TableBranch(string tableName, IEnumerable<ColumnDescription> columns)
+        public TableBranch(string tableName, IEnumerable<ColumnDescription> columns, DatabaseConnection connection)
+        : base(connection)
         {
             Columns = new ObservableCollection<ColumnDescription>(columns);
             TableName = tableName;
         }
 
-        public TableBranch(string tableName, ObservableCollection<ColumnDescription> columns)
+        public TableBranch(string tableName, ObservableCollection<ColumnDescription> columns, DatabaseConnection connection)
+        : base(connection)
         {
             Columns = columns;
             TableName = tableName;

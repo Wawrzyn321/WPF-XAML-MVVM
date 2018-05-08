@@ -1,6 +1,8 @@
 ﻿using System;
 using MySql.Data.MySqlClient;
 using System.ComponentModel;
+using System.Data.Common;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Windows;
@@ -12,7 +14,7 @@ namespace DatabaseConnectionDialog
     /// <summary>
     /// Simple ViewModel for connection dialog.
     /// </summary>
-    public class ViewModel : INotifyPropertyChanged
+    public class ViewModel : INotifyPropertyChanged, IDataErrorInfo
     {
 
         #region Observed Properties
@@ -88,7 +90,7 @@ namespace DatabaseConnectionDialog
 
                 view.ReturnToCaller(connection, SetAsCurrent);
             }
-            catch (MySqlException e)
+            catch (DbException e)
             {
                 //handle some know error codes
                 switch (e.ErrorCode)
@@ -100,7 +102,7 @@ namespace DatabaseConnectionDialog
                         MessageBox.Show("Unknown database or server!", "SQL Pad");
                         break;
                     default:
-                        MessageBox.Show($"Unknown error: {e.Message}, code: {e.ErrorCode}", "SQL Pad");
+                        MessageBox.Show($"Unknown error (VM): {e.Message}, code: {e.ErrorCode}", "SQL Pad");
                         break;
                 }
             }
@@ -147,7 +149,7 @@ namespace DatabaseConnectionDialog
             return true;
         }
         
-        #region INotifyPropertyChanged
+        #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -169,6 +171,28 @@ namespace DatabaseConnectionDialog
                 return true;
             }
         }
+
+        #endregion
+
+        #region IDataErrorInfo
+
+        public string this[string columnName]
+        {
+            get
+            {
+                var names = new[] {"Server", "Database", "UserID"};
+                if (names.Contains(columnName))
+                {
+                    if (string.IsNullOrEmpty(columnName))
+                    {
+                        return $"{columnName} must not be empty";
+                    }
+                }
+
+                return null;
+            }
+        }
+        public string Error => null;
 
         #endregion
 

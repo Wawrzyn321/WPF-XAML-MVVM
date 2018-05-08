@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
@@ -76,6 +78,13 @@ namespace WPFSQLPad.ViewModel
             set => Set(ref clearPreviousResults, value);
         }
 
+        private bool stopOnError;
+        public bool StopOnError
+        {
+            get => stopOnError;
+            set => Set(ref stopOnError, value);
+        } 
+
         private bool isQuerying;
         public bool IsQuerying
         {
@@ -104,21 +113,25 @@ namespace WPFSQLPad.ViewModel
         public ViewModel(IView view)
         {
             this.view = view;
+            StopOnError = true;
 
             logger = new Logger();
-            AssignViewEvents(view);
+            AssignViewEvents();
             InitializeObservables();
             InitializeCommands();
         }
 
         //subscribe to view events
-        private void AssignViewEvents(IView view)
+        private void AssignViewEvents()
         {
             view.OnExportTabXMLRequested += ExportTabAsXML;
             view.OnExportTabCSVRequested += ExportTabAsCSV;
             view.OnCloseTabRequested += CloseTab;
             view.OnDatabaseChoiceRequested += ChooseDatabase;
             view.OnCloseAllTabsRequested += CloseAllTabs;
+            view.OnDatabaseRefreshRequested += RefreshDatabase;
+            view.OnDatabaseCloseRequested += CloseDatabaseConnection;
+            view.OnRoutineSourceRequested += CopyRoutineSource;
         }
 
         //initialize collections
@@ -198,6 +211,10 @@ namespace WPFSQLPad.ViewModel
         {
             var queries = queriesObject as IList<string>;
 
+            var basebase = DatabasesTree.First(branch => branch.ConnectionReference == CurrentConnection);
+            int index = DatabasesTree.IndexOf(basebase);
+            bool requireRefresh = false;
+
             string count = queries.Count == 1 ? "query" : "queries";
             logger.Write($"Executing command with {queries.Count} {count}.");
 
@@ -212,9 +229,9 @@ namespace WPFSQLPad.ViewModel
                     queryType = DatabaseHelper.GetQueryType(query);
                     logger.Write($"{i + 1}) Query type is {queryType}, cool.", 1);
                 }
-                catch (Exception)
+                catch (ArgumentException)
                 {
-                    logger.Write($"{i + 1}) Unrecognized query type, gotta bad feelings 'bout this.", 1);
+                    logger.Write($"{i + 1}) Unrecognized query type {query}, gotta bad feelings 'bout this.", 1);
                 }
 
 
@@ -238,6 +255,12 @@ namespace WPFSQLPad.ViewModel
                     catch (Exception err)
                     {
                         logger.Write($"Error in current query: {err.Message}.", 1);
+
+                        if (StopOnError)
+                        {
+                            logger.WriteLine($"\nStopped on query {i+1} of {queries.Count}!", 1);
+                            break;
+                        }
                     }
                 }
                 else
@@ -252,7 +275,18 @@ namespace WPFSQLPad.ViewModel
                     catch (Exception err)
                     {
                         logger.Write($"Error in current query: {err.Message}.", 1);
+
+                        if (StopOnError)
+                        {
+                            logger.WriteLine($"\nStopped on query {i + 1} of {queries.Count}!", 1);
+                            break;
+                        }
                     }
+                }
+
+                if (queryType.RequireDatabaseRefresh())
+                {
+                    requireRefresh = true;
                 }
             }
             
@@ -262,6 +296,23 @@ namespace WPFSQLPad.ViewModel
                 IsQuerying = false; //we are not executing anymore
                 logger.Write("\n");
                 Log = logger.Flush();
+                if (requireRefresh)
+                {
+                    try
+                    {
+                        DatabasesTree[index] = CurrentConnection.GetDatabaseDescription();
+                    }
+                    catch (DatabaseDroppedException)
+                    {
+                        DatabasesTree.RemoveAt(index);
+                        foreach (IMenuItem connection in Connections)
+                        {
+                            connection.IsChoosen = false;
+                        }
+
+                        CurrentConnection = null;
+                    }
+                }
             }, DispatcherPriority.DataBind);
 
         }
@@ -278,7 +329,8 @@ namespace WPFSQLPad.ViewModel
             }
 
             //get separate queries
-            var queries = DatabaseHelper.SplitSqlExpression(queryText);
+            var queries = DatabaseHelper.SplitSqlExpression(queryText, CurrentConnection.Delimiter);
+            //List<string> queries = new List<string>{ queryText };
 
             if (queries.Count == 0)
             {
@@ -401,8 +453,47 @@ namespace WPFSQLPad.ViewModel
         //stop executing current command
         private void StopExecuting()
         {
-            queryThread?.Abort();
-            logger.WriteLine("Stopped query thread.");
+            if (queryThread != null)
+            {
+                queryThread.Abort();
+                logger.WriteLine("Stopped query thread.");
+                Log = logger.Flush();
+                queryThread = null;
+            }
+        }
+
+        //refresh database connection
+        private void RefreshDatabase(DatabaseBranch branch)
+        {
+            try
+            {
+                DatabasesTree[DatabasesTree.IndexOf(branch)] = branch.ConnectionReference.GetDatabaseDescription();
+                logger.WriteLine($"Refreshed connection to {branch.ConnectionReference}.");
+            }
+            catch (DatabaseDroppedException)
+            {
+                logger.WriteLine("Connection closed!");
+                CloseDatabaseConnection(branch);
+                throw;
+            }
+            Log = logger.Flush();
+        }
+
+        //close database connection
+        private void CloseDatabaseConnection(DatabaseBranch branch)
+        {
+            branch.ConnectionReference.CloseConnection(true);
+            DatabasesTree.Remove(branch);
+            logger.WriteLine($"Closed connection to {branch.ConnectionReference}.");
+            Log = logger.Flush();
+        }
+
+        //copy routine source code to clipboard
+        private void CopyRoutineSource(Routine routine)
+        {
+            Debug.WriteLine("!");
+            Clipboard.SetText(routine.GetCode());
+            logger.WriteLine("Log has been copied to clipboard.");
             Log = logger.Flush();
         }
 

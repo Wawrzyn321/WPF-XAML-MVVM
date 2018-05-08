@@ -4,18 +4,39 @@ namespace Model
 {
     /// <summary>
     /// Header for TreeView, used to branch
-    /// actual tables and views.
+    /// actual tables, views and routines.
     /// </summary>
-    public class HeaderBranch
+    public abstract class HeaderBranch : TreeItem
     {
         public string HeaderName { get; }
-        public ObservableCollection<TableBranch> Tables { get; }
 
-        public HeaderBranch(string headerName, ObservableCollection<TableBranch> tables)
+        protected HeaderBranch(string headerName, DatabaseConnection connection) : base(connection)
         {
             HeaderName = headerName;
-            Tables = tables;
         }
 
+    }
+
+    public class TableHeader : HeaderBranch
+    {
+        public ObservableCollection<TableBranch> Items { get; }
+
+        public TableHeader(string headerName, ObservableCollection<TableBranch> items, DatabaseConnection connection) 
+            : base(headerName, connection)
+        {
+            Items = items;
+        }
+
+    }
+
+    public class RoutineHeader : HeaderBranch
+    {
+        public ObservableCollection<Routine> Routines { get; }
+
+        public RoutineHeader(string headerName, ObservableCollection<Routine> routines, DatabaseConnection connection)
+            : base(headerName, connection)
+        {
+            Routines = routines;
+        }
     }
 }

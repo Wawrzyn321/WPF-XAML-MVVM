@@ -75,15 +75,21 @@ namespace Model
                 bool isView = tableTypes[i] == tableType_View;
                 if (isView)
                 {
-                    views.Add(new TableBranch(tableNames[i], columns));
+                    views.Add(new TableBranch(tableNames[i], columns, this));
                 }
                 else
                 {
-                    tables.Add(new TableBranch(tableNames[i], columns));
+                    tables.Add(new TableBranch(tableNames[i], columns, this));
                 }
             }
-            return new DatabaseBranch($"{Server}:{Database}", tables, views, this);
+            throw new NotImplementedException();
+            return new DatabaseBranch($"{Server}: {Database}", tables, views, new ObservableCollection<Routine>(), this);
+            }
 
+        public override List<Routine> GetRoutines()
+        {
+            throw new NotImplementedException();
+            return new List<Routine>();
         }
 
         public override List<ColumnDescription> GetTableDescription(string tableName)
@@ -97,19 +103,12 @@ namespace Model
 
             foreach (string[] s in Select($"SP_COLUMNS '{tableName}'").Data)
             {
-                result.Add(new ColumnDescription
-                {
-                    Name = s[3],
-                    Type = s[5],
-                    CanBeNull = s[10].Equals("0"),
-                    Key = "?",
-                    Extra = "?",
-                    Default = "?",
-                });
+                string Name = s[3];
+                string Type = s[5];
+                bool CanBeNull = s[10].Equals("0");
+                result.Add(new ColumnDescription(Name, Type, CanBeNull, this));
             }
-
             return result;
         }
-
     }
 }

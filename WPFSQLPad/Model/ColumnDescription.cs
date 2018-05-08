@@ -6,52 +6,35 @@ namespace Model
     /// Description of DB column filled with properties
     /// from result of DESC-like query.
     /// </summary>
-    public class ColumnDescription : ImplementsPropertyChanged
+    public class ColumnDescription : TreeItem
     {
         public const string CanBeNull_Yes = "YES";
-        public const string CanBeNull_No = "NO";
 
-        private string name;
-        public string Name
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public bool CanBeNull { get; set; }
+        public string Key { get; set; }
+        public string Default { get; set; }
+        public string Extra { get; set; }
+
+        public ColumnDescription(string name, string type, bool canBeNull, string key, string defaultValue, string extra, DatabaseConnection connection)
+            : base(connection)
         {
-            get => name;
-            set => Set(ref name, value);
+            Name = name;
+            Type = type;
+            CanBeNull = canBeNull;
+            Key = key;
+            Default = defaultValue;
+            Extra = extra;
         }
 
-        private string type;
-        public string Type
+        public ColumnDescription(string name, string type, bool canBeNull, DatabaseConnection connection)
+            : base(connection)
         {
-            get => type;
-            set => Set(ref type, value);
+            Name = name;
+            Type = type;
+            CanBeNull = canBeNull;
         }
-
-        private bool canBeNull;
-        public bool CanBeNull
-        {
-            get => canBeNull;
-            set => Set(ref canBeNull, value);
-        }
-
-        private string key;
-        public string Key
-        {
-            get => key;
-            set => Set(ref key, value);
-        }
-
-        private string defaultValue;
-        public string Default
-        {
-            get => defaultValue;
-            set => Set(ref defaultValue, value);
-        }
-
-        private string extra;
-        public string Extra
-        {
-            get => extra;
-            set => Set(ref extra, value);
-        } 
 
         public override string ToString()
         {

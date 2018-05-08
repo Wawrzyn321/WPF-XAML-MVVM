@@ -72,12 +72,27 @@
                 </Grid.RowDefinitions>
                 <TreeView x:Name="DatabasesTree" ItemsSource="{Binding DatabasesTree}">
                     <TreeView.Resources>
-                        <DataTemplate DataType="{x:Type System:String}">
-                            <TextBlock Text="{Binding}" />
-                        </DataTemplate>
 
-                        <HierarchicalDataTemplate DataType="{x:Type model:DatabaseBranch}" ItemsSource="{Binding TablesAndViews}">
+                        <HierarchicalDataTemplate DataType="{x:Type model:DatabaseBranch}" ItemsSource="{Binding AllChildren}">
                             <WrapPanel>
+                                <WrapPanel.Resources>
+                                    <Style TargetType="{x:Type WrapPanel}">
+                                        <Setter Property="ContextMenu">
+                                            <Setter.Value>
+                                                <ContextMenu>
+                                                    <MenuItem
+                                                        Command="{Binding Path=RefreshDatabaseConnectionCommand, Source={x:Reference WPFWindow}}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Refresh" />
+                                                    <MenuItem
+                                                        Command="{Binding Path=CloseDatabaseConnectionCommand, Source={x:Reference WPFWindow}}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Close this connection" />
+                                                </ContextMenu>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </WrapPanel.Resources>
                                 <TextBlock FontWeight="Bold" Text="{Binding DatabaseName}" />
                                 <Ellipse
                                     Width="8"
@@ -85,14 +100,44 @@
                                     Margin="2,4,2,2"
                                     Fill="{Binding ConnectionReference.IsAvailable, Converter={StaticResource AvailabilityToColorConverter}}" />
                             </WrapPanel>
+
+
+
                         </HierarchicalDataTemplate>
 
                         <HierarchicalDataTemplate DataType="{x:Type model:HeaderBranch}" ItemsSource="{Binding Tables}">
-                            <TextBlock FontWeight="Bold" Text="{Binding HeaderName}" />
+                            <TextBlock Text="{Binding HeaderName}" />
                         </HierarchicalDataTemplate>
 
                         <HierarchicalDataTemplate DataType="{x:Type model:TableBranch}" ItemsSource="{Binding Columns}">
-                            <TextBlock FontWeight="Bold" Text="{Binding TableName}" />
+                            <TextBlock Text="{Binding TableName}" />
+                        </HierarchicalDataTemplate>
+
+                        <HierarchicalDataTemplate DataType="{x:Type model:RoutineHeader}" ItemsSource="{Binding Routines}">
+                            <TextBlock Text="{Binding HeaderName}" />
+                        </HierarchicalDataTemplate>
+
+                        <HierarchicalDataTemplate DataType="{x:Type model:Routine}">
+                            <TextBlock Text="{Binding}">
+                                <TextBlock.Resources>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="ContextMenu">
+                                            <Setter.Value>
+                                                <ContextMenu>
+                                                    <MenuItem
+                                                        Command="{Binding Path=CopyRoutineSourceCommand, Source={x:Reference WPFWindow}}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Copy source to clipboard" />
+                                                </ContextMenu>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TextBlock.Resources>
+                            </TextBlock>
+                        </HierarchicalDataTemplate>
+
+                        <HierarchicalDataTemplate DataType="{x:Type model:TableHeader}" ItemsSource="{Binding Items}">
+                            <TextBlock Text="{Binding HeaderName}" />
                         </HierarchicalDataTemplate>
 
                     </TreeView.Resources>
@@ -137,14 +182,21 @@
                     <Button
                         Width="70"
                         Margin="0,8"
-                        Command="{Binding StopExecuting}"
+                        Command="{Binding StopExecutingCommand}"
                         Content="    Stop &#x0a; executing" />
-                    <WrapPanel Margin="0,8">
+                    <WrapPanel Margin="0,4">
                         <CheckBox
                             Padding="2"
                             VerticalAlignment="Center"
                             IsChecked="{Binding ClearPreviousResults}" />
                         <TextBlock Padding="2" Text="Clear &#xA;previous" />
+                    </WrapPanel>
+                    <WrapPanel Margin="0,4">
+                        <CheckBox
+                            Padding="2"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding StopOnError}" />
+                        <TextBlock Padding="2" Text="Stop on &#xA;error" />
                     </WrapPanel>
                 </StackPanel>
             </Grid>

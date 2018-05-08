@@ -63,7 +63,7 @@ namespace WPFSQLPad.View
             {
                 execute((T)parameter);
             }
-            catch (Exception)
+            catch (InvalidCastException)
             {
                 // ignored
             }

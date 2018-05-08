@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
+using System.Text;
 using MySql.Data.MySqlClient;
 
 namespace Model
@@ -66,15 +68,41 @@ namespace Model
                 bool isView = data[1] == tableType_View;
                 if (isView)
                 {
-                    views.Add(new TableBranch(tableName, columns));
+                    views.Add(new TableBranch(tableName, columns, this));
                 }
                 else
                 {
-                    tables.Add(new TableBranch(tableName, columns));
+                    tables.Add(new TableBranch(tableName, columns, this));
                 }
             }
 
-            return new DatabaseBranch($"{Server}:{Database}", tables, views, this);
+            var routines = new ObservableCollection<Routine>(GetRoutines());
+
+            return new DatabaseBranch($"{Server}:{Database}", tables, views, routines, this);
+        }
+
+        public override List<Routine> GetRoutines()
+        {
+            if (!CheckAvailability())
+            {
+                throw new InvalidOperationException("Database is unavailable!");
+            }
+
+            ResultContainer s = Select("SHOW FUNCTION STATUS");
+            List<Routine> routines = new List<Routine>(s.Data.Count);
+
+            foreach (string[] data in s.Data)
+            {
+                string name = data[1];
+                string type = data[2];
+                string[] query =
+                    Select($"SELECT param_list, returns FROM mysql.proc WHERE db = '{Database}' AND name = '{name}'").Data[0];
+                string parameters = query[0];
+                string returnType = query[1];
+                routines.Add(new Routine(name, type, parameters, returnType, this));
+            }
+
+            return routines;
         }
 
         public override List<ColumnDescription> GetTableDescription(string tableName)
@@ -88,15 +116,14 @@ namespace Model
 
             foreach (string[] s in Select($"DESC {tableName}").Data)
             {
-                result.Add(new ColumnDescription
-                {
-                    Name = s[0],
-                    Type = s[1],
-                    CanBeNull = s[2].Equals(ColumnDescription.CanBeNull_Yes),
-                    Key = s[3],
-                    Extra = s[4],
-                    Default = s[5],
-                });
+                string Name = s[0];
+                string Type = s[1];
+                bool CanBeNull = s[2].Equals(ColumnDescription.CanBeNull_Yes);
+                string Key = s[3];
+                string Extra = s[4];
+                string Default = s[5];
+
+                result.Add(new ColumnDescription(Name, Type, CanBeNull, Key, Default, Extra, this));
             }
 
             return result;

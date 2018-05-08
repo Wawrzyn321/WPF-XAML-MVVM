@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Model
 {
@@ -12,8 +15,10 @@ namespace Model
         SQLServer,
     }
 
-    public abstract class DatabaseConnection : ImplementsPropertyChanged, IDisposable, IMenuItem
+    public abstract class DatabaseConnection : INotifyPropertyChanged, IDisposable, IMenuItem
     {
+        #region Observed Properties
+
         #region IMenuItem Members
 
         protected bool isChoosen;
@@ -46,7 +51,23 @@ namespace Model
         {
             get => databaseType;
             set => Set(ref databaseType, value);
+        }
+
+        private string delimiter;
+        public string Delimiter
+        {
+            get => delimiter;
+            set => Set(ref delimiter, value);
+        }
+
+        private bool isPerformingQuery;
+        public bool IsPerformingQuery
+        {
+            get => isPerformingQuery;
+            set => Set(ref isPerformingQuery, value);
         } 
+
+        #endregion
 
         public string Server { get; protected set; }
         public string Database { get; protected set; }
@@ -61,6 +82,10 @@ namespace Model
 
         protected DbConnection connection;
 
+        protected DatabaseConnection()
+        {
+            Delimiter = ";";
+        }
 
         protected abstract DbCommand CreateCommand(string query);
 
@@ -72,15 +97,24 @@ namespace Model
 
         public abstract DatabaseBranch GetDatabaseDescription();
 
+        public abstract List<Routine> GetRoutines();
 
-        public virtual bool CheckAvailability() {
+        public virtual bool CheckAvailability()
+        {
+
+            if (IsPerformingQuery)
+            {
+                return true;
+            }
+
             bool canPing;
             try
             {
                 canPing = Ping();
             }
-            catch (DbException)
+            catch (DbException e)
             {
+                Debug.WriteLine($"CheckAvailablity: {e.Message} {e.ErrorCode}");
                 //ignore
                 return false;
             }
@@ -115,6 +149,10 @@ namespace Model
                         LastError = "Invalid username/password, please try again";
                         LastErrorCode = 1045;
                         break;
+                    case -2147467259:
+                        LastError = "Cannot find database";
+                        LastErrorCode = 1045;
+                        break;
                     default:
                         LastError = "Unknown";
                         LastErrorCode = ex.ErrorCode;
@@ -122,9 +160,9 @@ namespace Model
                 }
                 return false;
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException e)
             {
-                //ignore
+                Console.WriteLine($"InvalidOperationException in open: (VM): {e.Message}, code: {e}", "SQL Pad");
                 return true;
             }
         }
@@ -141,8 +179,9 @@ namespace Model
                 connection.Close();
                 return true;
             }
-            catch (DbException)
+            catch (DbException e)
             {
+                Console.WriteLine($"DBexc in open: (VM): {e.Message}, code: {e}", "SQL Pad");
                 return false;
             }
         }
@@ -154,30 +193,56 @@ namespace Model
                 throw new InvalidOperationException("Database is unavailable!");
             }
 
+            IsPerformingQuery = true;
+
             List<string[]> results = new List<string[]>();
 
             if (string.IsNullOrEmpty(query))
             {
                 return new ResultContainer();
             }
-
             var cmd = CreateCommand(query);
             List<DbColumn> schema;
-            using (DbDataReader dataReader = cmd.ExecuteReader())
+
+            try
             {
-                schema = new List<DbColumn>(dataReader.GetColumnSchema());
-
-                while (dataReader.Read())
+                using (DbDataReader dataReader = cmd.ExecuteReader())
                 {
-                    results.Add(new string[schema.Count]);
-                    for (int i = 0; i < schema.Count; i++)
-                    {
-                        //assign data to last added element
-                        results[results.Count - 1][i] = dataReader[schema[i].ColumnName].ToString();
-                    }
-                }
+                    schema = new List<DbColumn>(dataReader.GetColumnSchema());
 
-                dataReader.Close();
+                    while (dataReader.Read())
+                    {
+                        results.Add(new string[schema.Count]);
+                        for (int i = 0; i < schema.Count; i++)
+                        {
+                            //assign data to last added element
+                            object result = dataReader[schema[i].ColumnName];
+
+                            if (result is byte[] bytes)
+                            {
+                                results[results.Count - 1][i] = System.Text.Encoding.UTF8.GetString(bytes);
+                            }
+                            else
+                            {
+                                results[results.Count - 1][i] = result.ToString();
+                            }
+                        }
+                    }
+
+                    dataReader.Close();
+                }
+            }
+            catch (DbException e)
+            {
+                if (e.Message.Equals("No database selected"))
+                {
+                    throw new DatabaseDroppedException();
+                }
+                throw;
+            }
+            finally
+            {
+                IsPerformingQuery = false;
             }
 
             return new ResultContainer("Query result", Database, schema, results);
@@ -189,9 +254,12 @@ namespace Model
             {
                 throw new InvalidOperationException("Database is unavailable!");
             }
-            ;
-            var cmd = CreateCommand(query);
-            return cmd.ExecuteNonQuery();
+
+            IsPerformingQuery = true;
+            DbCommand cmd = CreateCommand(query);
+            int rowCount = cmd.ExecuteNonQuery();
+            IsPerformingQuery = false;
+            return rowCount;
         }
 
         public virtual void Dispose()
@@ -206,5 +274,24 @@ namespace Model
             return $"DatabaseConnection to {Server} at database {Database}, user: {UserId}";
         }
 
+        #region INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected bool Set<T>(ref T oldValue, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (Equals(oldValue, value))
+            {
+                return false;
+            }
+            else
+            {
+                oldValue = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                return true;
+            }
+        }
+
+        #endregion
     }
 }

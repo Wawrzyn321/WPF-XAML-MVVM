@@ -25,5 +25,14 @@ namespace WPFSQLPad.View
 
         //close results tabs
         event Action OnCloseAllTabsRequested;
+
+        //refresh database connection
+        event Action<DatabaseBranch> OnDatabaseRefreshRequested;
+
+        //close database connection
+        event Action<DatabaseBranch> OnDatabaseCloseRequested;
+
+        //get routine source code
+        event Action<Routine> OnRoutineSourceRequested;
     }
 }

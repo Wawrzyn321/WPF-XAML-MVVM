@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 
@@ -10,8 +11,6 @@ namespace Model
     /// Structure of data returned by
     /// SELECT-like statement.
     /// </summary>
-    ///
-    ///
     ///
     /// todo add transform(int row) returning column
     public struct ResultContainer
@@ -78,6 +77,7 @@ namespace Model
 
             return columns;
         }
+
     }
 
 }

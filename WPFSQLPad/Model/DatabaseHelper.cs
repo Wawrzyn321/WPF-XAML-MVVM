@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 
 namespace Model
@@ -16,6 +17,8 @@ namespace Model
         ALTER,
         DROP,
         SHOW,
+        DELIMITER,
+        SET,
     }
 
     /// <summary>
@@ -27,7 +30,7 @@ namespace Model
         private static readonly char[] escapeCharacters = { '\'', '\"' };
 
         //split SQL by ;
-        public static List<string> SplitSqlExpression(string sql)
+        public static List<string> SplitSqlExpression(string sql, string delimiter)
         {
             List<string> statements = new List<string>();
             if (string.IsNullOrEmpty(sql))
@@ -113,7 +116,17 @@ namespace Model
         //commands like SELECT, DESC and SHOW can return a table of results
         public static bool YieldsTableOutput(this QueryType queryType)
         {
-            return queryType == QueryType.SELECT || queryType == QueryType.DESC || queryType == QueryType.SHOW;
+            var types = new[] {QueryType.SELECT, QueryType.DESC, QueryType.SHOW};
+
+            return types.Contains(queryType);
+        }
+
+        //some commands may change the structure of tabels and database
+        public static bool RequireDatabaseRefresh(this QueryType queryType)
+        {
+            var types = new[] { QueryType.ALTER, QueryType.DROP, QueryType.DELETE, QueryType.CREATE };
+
+            return types.Contains(queryType);
         }
     }
 }

@@ -6,31 +6,30 @@ namespace Model
     /// <summary>
     /// Database branch for TreeView
     /// </summary>
-    public class DatabaseBranch : ImplementsPropertyChanged, IEquatable<DatabaseBranch>
+    public class DatabaseBranch : TreeItem, IEquatable<DatabaseBranch>
     {
-        private string databaseName;
-        public string DatabaseName
-        {
-            get => databaseName;
-            set => Set(ref databaseName, value);
-        }
+        public string DatabaseName { get; }
+        public TableHeader Tables { get; }
+        public TableHeader Views { get; }
+        public RoutineHeader Routines { get; }
+        public ObservableCollection<HeaderBranch> AllChildren { get; } //tables and views are separated here
 
-        public HeaderBranch Tables { get; }
-        public HeaderBranch Views { get; }
-        public DatabaseConnection ConnectionReference { get; }
-        public ObservableCollection<HeaderBranch> TablesAndViews { get; } //tables and views are separated here
-
-        public DatabaseBranch(string databaseName, ObservableCollection<TableBranch> tables, ObservableCollection<TableBranch> views, DatabaseConnection connection)
+        public DatabaseBranch(string databaseName, 
+            ObservableCollection<TableBranch> tables,
+            ObservableCollection<TableBranch> views, 
+            ObservableCollection<Routine> routines, 
+            DatabaseConnection connection) : base(connection)
         {
-            Tables = new HeaderBranch("Tables", tables);
-            Views = new HeaderBranch("Views", views);
+            Tables = new TableHeader("Tables", tables, connection);
+            Views = new TableHeader("Views", views, connection);
+            Routines = new RoutineHeader("Routines", routines, connection);
             DatabaseName = databaseName;
-            ConnectionReference = connection;
 
-            TablesAndViews = new ObservableCollection<HeaderBranch>
+            AllChildren = new ObservableCollection<HeaderBranch>
             {
                 Tables,
                 Views,
+                Routines,
             };
         }
 
@@ -40,7 +39,7 @@ namespace Model
             {
                 return false;
             }
-            return Equals(databaseName, other.DatabaseName);
+            return Equals(DatabaseName, other.DatabaseName);
         }
     }
 }
