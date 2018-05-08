@@ -1,11 +1,11 @@
 ﻿using System;
-using MySql.Data.MySqlClient;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Windows;
+using System.Windows.Input;
 using Model;
 
 
@@ -56,6 +56,7 @@ namespace DatabaseConnectionDialog
 
         #endregion
 
+        public ICommand CancelCommand { get; }
         private readonly IView view;
 
         public ViewModel(IView view)
@@ -64,9 +65,10 @@ namespace DatabaseConnectionDialog
             view.OnConnectButtonClicked += TryToConnect;
 
             Server = "localhost";
-            Database = "testowa";
+            Database = "world";
             UserID = "root";
 
+            CancelCommand = new ActionCommand(() => view.ReturnToCaller(null, false));
             SetAsCurrent = true;
         }
 

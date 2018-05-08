@@ -77,7 +77,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="View\ActionCommand.cs" />
+    <Compile Include="ViewModel\ActionCommand.cs" />
     <Compile Include="View\AvailabilityToColorConverter.cs" />
     <Compile Include="View\IView.cs" />
     <Compile Include="MainWindow.cs" />
@@ -141,6 +141,9 @@
       <Project>{9164a62d-caaf-4caf-bc9a-8a8a73d09f59}</Project>
       <Name>Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="View\TreeItems\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

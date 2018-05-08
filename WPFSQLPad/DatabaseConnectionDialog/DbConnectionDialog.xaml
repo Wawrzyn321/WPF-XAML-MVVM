@@ -21,6 +21,13 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding CancelCommand}" />
+        <KeyBinding
+            Key="W"
+            Command="{Binding CancelCommand}"
+            Modifiers="Control" />
+    </Window.InputBindings>
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel.Resources>
             <Style TargetType="TextBox">

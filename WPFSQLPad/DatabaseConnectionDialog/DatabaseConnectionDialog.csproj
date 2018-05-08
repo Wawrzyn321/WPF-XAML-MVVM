@@ -70,6 +70,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ActionCommand.cs" />
     <Compile Include="IView.cs" />
     <Compile Include="SecureStringUtility.cs" />
     <Compile Include="ViewModel.cs" />
