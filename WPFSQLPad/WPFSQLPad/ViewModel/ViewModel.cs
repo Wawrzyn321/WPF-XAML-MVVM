@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Model;
+using Model.TreeItems;
 using WPFSQLPad.View;
 
 namespace WPFSQLPad.ViewModel

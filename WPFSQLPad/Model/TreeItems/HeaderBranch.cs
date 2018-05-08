@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Model
+namespace Model.TreeItems
 {
     /// <summary>
     /// Header for TreeView, used to branch

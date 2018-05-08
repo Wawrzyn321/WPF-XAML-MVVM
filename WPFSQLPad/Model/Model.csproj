@@ -36,23 +36,23 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColumnDescription.cs" />
-    <Compile Include="DatabaseBranch.cs" />
     <Compile Include="DatabaseConnection.cs" />
     <Compile Include="DatabaseDroppedException.cs" />
     <Compile Include="MySQLDatabaseConnection.cs" />
     <Compile Include="DatabaseHelper.cs" />
     <Compile Include="DataTableSerializer.cs" />
     <Compile Include="ExternalTimerDispatcher.cs" />
-    <Compile Include="HeaderBranch.cs" />
     <Compile Include="IMenuItem.cs" />
     <Compile Include="MenuItemPlaceholder.cs" />
-    <Compile Include="Routine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ResultContainer.cs" />
     <Compile Include="SQLServerDatabaseConnection.cs" />
-    <Compile Include="TableBranch.cs" />
-    <Compile Include="TreeItem.cs" />
+    <Compile Include="TreeItems\ColumnDescription.cs" />
+    <Compile Include="TreeItems\DatabaseBranch.cs" />
+    <Compile Include="TreeItems\HeaderBranch.cs" />
+    <Compile Include="TreeItems\Routine.cs" />
+    <Compile Include="TreeItems\TableBranch.cs" />
+    <Compile Include="TreeItems\TreeItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime.Standard, Version=4.7.1.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">

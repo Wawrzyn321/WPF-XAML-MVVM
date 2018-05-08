@@ -1,4 +1,4 @@
-﻿namespace Model
+﻿namespace Model.TreeItems
 {
     public abstract class TreeItem
     {

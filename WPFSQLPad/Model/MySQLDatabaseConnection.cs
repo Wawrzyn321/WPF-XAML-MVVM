@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Data.Common;
-using System.Diagnostics;
-using System.Text;
+using Model.TreeItems;
 using MySql.Data.MySqlClient;
 
 namespace Model

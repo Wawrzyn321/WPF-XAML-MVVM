@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Model
+namespace Model.TreeItems
 {
     /// <summary>
     /// Description of DB column filled with properties

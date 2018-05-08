@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 
-namespace Model
+namespace Model.TreeItems
 {
     /// <summary>
     /// Database branch for TreeView
     /// </summary>
-    public class DatabaseBranch : TreeItem, IEquatable<DatabaseBranch>
+    public class DatabaseBranch : IEquatable<DatabaseBranch>
     {
         public string DatabaseName { get; }
         public TableHeader Tables { get; }
@@ -14,16 +14,19 @@ namespace Model
         public RoutineHeader Routines { get; }
         public ObservableCollection<HeaderBranch> AllChildren { get; } //tables and views are separated here
 
+        public DatabaseConnection ConnectionReference { get; }
+
         public DatabaseBranch(string databaseName, 
             ObservableCollection<TableBranch> tables,
             ObservableCollection<TableBranch> views, 
             ObservableCollection<Routine> routines, 
-            DatabaseConnection connection) : base(connection)
+            DatabaseConnection connection)
         {
+            DatabaseName = databaseName;
             Tables = new TableHeader("Tables", tables, connection);
             Views = new TableHeader("Views", views, connection);
             Routines = new RoutineHeader("Routines", routines, connection);
-            DatabaseName = databaseName;
+            ConnectionReference = connection;
 
             AllChildren = new ObservableCollection<HeaderBranch>
             {

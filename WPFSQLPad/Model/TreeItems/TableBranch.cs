@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Model
+namespace Model.TreeItems
 {
     /// <summary>
     /// Branch model for TreeView with name

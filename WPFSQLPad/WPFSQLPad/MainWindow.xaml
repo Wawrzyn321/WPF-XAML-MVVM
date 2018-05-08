@@ -9,6 +9,7 @@
     xmlns:model="clr-namespace:Model;assembly=Model"
     xmlns:view="clr-namespace:WPFSQLPad.View"
     xmlns:wpfPad="clr-namespace:WPFSQLPad"
+    xmlns:treeItems="clr-namespace:Model.TreeItems;assembly=Model"
     x:Name="WPFWindow"
     Title="WPF SQLPad"
     Width="900"
@@ -73,7 +74,7 @@
                 <TreeView x:Name="DatabasesTree" ItemsSource="{Binding DatabasesTree}">
                     <TreeView.Resources>
 
-                        <HierarchicalDataTemplate DataType="{x:Type model:DatabaseBranch}" ItemsSource="{Binding AllChildren}">
+                        <HierarchicalDataTemplate DataType="{x:Type treeItems:DatabaseBranch}" ItemsSource="{Binding AllChildren}">
                             <WrapPanel>
                                 <WrapPanel.Resources>
                                     <Style TargetType="{x:Type WrapPanel}">
@@ -105,19 +106,19 @@
 
                         </HierarchicalDataTemplate>
 
-                        <HierarchicalDataTemplate DataType="{x:Type model:HeaderBranch}" ItemsSource="{Binding Tables}">
+                        <HierarchicalDataTemplate DataType="{x:Type treeItems:HeaderBranch}" ItemsSource="{Binding Tables}">
                             <TextBlock Text="{Binding HeaderName}" />
                         </HierarchicalDataTemplate>
 
-                        <HierarchicalDataTemplate DataType="{x:Type model:TableBranch}" ItemsSource="{Binding Columns}">
+                        <HierarchicalDataTemplate DataType="{x:Type treeItems:TableBranch}" ItemsSource="{Binding Columns}">
                             <TextBlock Text="{Binding TableName}" />
                         </HierarchicalDataTemplate>
 
-                        <HierarchicalDataTemplate DataType="{x:Type model:RoutineHeader}" ItemsSource="{Binding Routines}">
+                        <HierarchicalDataTemplate DataType="{x:Type treeItems:RoutineHeader}" ItemsSource="{Binding Routines}">
                             <TextBlock Text="{Binding HeaderName}" />
                         </HierarchicalDataTemplate>
 
-                        <HierarchicalDataTemplate DataType="{x:Type model:Routine}">
+                        <HierarchicalDataTemplate DataType="{x:Type treeItems:Routine}">
                             <TextBlock Text="{Binding}">
                                 <TextBlock.Resources>
                                     <Style TargetType="{x:Type TextBlock}">
@@ -136,7 +137,7 @@
                             </TextBlock>
                         </HierarchicalDataTemplate>
 
-                        <HierarchicalDataTemplate DataType="{x:Type model:TableHeader}" ItemsSource="{Binding Items}">
+                        <HierarchicalDataTemplate DataType="{x:Type treeItems:TableHeader}" ItemsSource="{Binding Items}">
                             <TextBlock Text="{Binding HeaderName}" />
                         </HierarchicalDataTemplate>
 
