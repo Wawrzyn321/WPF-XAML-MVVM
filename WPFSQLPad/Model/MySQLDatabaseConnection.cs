@@ -55,8 +55,8 @@ namespace Model
             }
 
             ResultContainer s = Select("SHOW FULL TABLES");
-            var tables = new ObservableCollection<TableBranch>();
-            var views = new ObservableCollection<TableBranch>();
+            var tables = new List<TableBranch>();
+            var views = new List<TableBranch>();
             foreach (var data in s.Data)
             {
                 string tableName = data[0];
@@ -74,7 +74,7 @@ namespace Model
                 }
             }
 
-            var routines = new ObservableCollection<Routine>(GetRoutines());
+            var routines = GetRoutines();
 
             return new DatabaseBranch($"{Server}:{Database}", tables, views, routines, this);
         }
@@ -101,6 +101,16 @@ namespace Model
             }
 
             return routines;
+        }
+
+        public override string GetRoutineCode(Routine.RoutineType type, string name)
+        {
+            if (!CheckAvailability())
+            {
+                throw new InvalidOperationException("Database is unavailable!");
+            }
+
+            return Select($"SHOW CREATE {type} {name}").Data[0][2];
         }
 
         public override List<ColumnDescription> GetTableDescription(string tableName)

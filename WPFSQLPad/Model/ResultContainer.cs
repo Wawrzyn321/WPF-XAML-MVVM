@@ -20,6 +20,9 @@ namespace Model
         public string Name { get; }
         public string SourceDatabase { get; }
 
+        public string[] FirstRow => Data[0];
+        public string FirstResult => Data[0][0];
+
         public ResultContainer(string name, string sourceDatabase, List<DbColumn> columns, List<string[]> data)
         {
             Name = name;
@@ -51,6 +54,7 @@ namespace Model
             return data;
         }
 
+        //get data columns for DataTable
         private DataColumn[] GetDataColumns()
         {
             DataColumn[] columns = new DataColumn[Columns.Count];

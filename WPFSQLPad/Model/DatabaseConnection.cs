@@ -100,6 +100,8 @@ namespace Model
 
         public abstract List<Routine> GetRoutines();
 
+        public abstract string GetRoutineCode(Routine.RoutineType type, string name);
+
         public virtual bool CheckAvailability()
         {
 
@@ -294,5 +296,6 @@ namespace Model
         }
 
         #endregion
+
     }
 }

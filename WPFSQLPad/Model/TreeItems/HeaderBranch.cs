@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Model.TreeItems
 {
@@ -19,9 +20,9 @@ namespace Model.TreeItems
 
     public class TableHeader : HeaderBranch
     {
-        public ObservableCollection<TableBranch> Items { get; }
+        public List<TableBranch> Items { get; }
 
-        public TableHeader(string headerName, ObservableCollection<TableBranch> items, DatabaseConnection connection) 
+        public TableHeader(string headerName, List<TableBranch> items, DatabaseConnection connection) 
             : base(headerName, connection)
         {
             Items = items;
@@ -31,9 +32,9 @@ namespace Model.TreeItems
 
     public class RoutineHeader : HeaderBranch
     {
-        public ObservableCollection<Routine> Routines { get; }
+        public List<Routine> Routines { get; }
 
-        public RoutineHeader(string headerName, ObservableCollection<Routine> routines, DatabaseConnection connection)
+        public RoutineHeader(string headerName, List<Routine> routines, DatabaseConnection connection)
             : base(headerName, connection)
         {
             Routines = routines;

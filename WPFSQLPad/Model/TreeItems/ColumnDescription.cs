@@ -44,15 +44,15 @@ namespace Model.TreeItems
             {
                 list.Add("NOT NULL");
             }
-            if (Key != string.Empty)
+            if (!string.IsNullOrEmpty(Key))
             {
                 list.Add(Key);
             }
-            if (Default != string.Empty)
+            if (!string.IsNullOrEmpty(Default))
             {
                 list.Add("Default: " + Default);
             }
-            if (Extra != string.Empty)
+            if (!string.IsNullOrEmpty(Extra))
             {
                 list.Add(Extra);
             }

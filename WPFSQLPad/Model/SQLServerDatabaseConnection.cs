@@ -62,9 +62,8 @@ namespace Model
                 tableTypes[i] = allTables.Data[i][3];
             }
 
-
-            var tables = new ObservableCollection<TableBranch>();
-            var views = new ObservableCollection<TableBranch>();
+            var tables = new List<TableBranch>();
+            var views = new List<TableBranch>();
             for (int i = 0; i < tableNames.Length; i++)
             {
                 ResultContainer s = Select("SP_COLUMNS testowaTabela");
@@ -80,14 +79,54 @@ namespace Model
                     tables.Add(new TableBranch(tableNames[i], columns, this));
                 }
             }
-            throw new NotImplementedException();
-            return new DatabaseBranch($"{Server}: {Database}", tables, views, new ObservableCollection<Routine>(), this);
-            }
+
+
+            var routines = GetRoutines();
+
+            return new DatabaseBranch($"{Server}: {Database}", tables, views, routines, this);
+        }
 
         public override List<Routine> GetRoutines()
         {
-            throw new NotImplementedException();
-            return new List<Routine>();
+            if (!CheckAvailability())
+            {
+                throw new InvalidOperationException("Database is unavailable!");
+            }
+
+            var routines = new List<Routine>();
+            var data = Select($"select ROUTINE_NAME, ROUTINE_TYPE from {Database}.information_schema.routines").Data;
+            foreach (var routineData in data)
+            {
+                string name = routineData[0];
+                string type = routineData[1];
+
+                List<string[]> parametersData =
+                    Select(
+                        $"select name, TYPE_NAME(system_type_id)  from sys.parameters where object_id = object_id('{name}')").Data;
+
+                string[] parameters = new string[parametersData.Count];
+                for (int i = 0; i < parametersData.Count; i++)
+                {
+                    parameters[i] = $"{parametersData[i][1]} {parametersData[i][0]}";
+                }
+
+                routines.Add(new Routine(name, type, string.Join(", ", parameters), string.Empty, this));
+            }
+
+            return routines;
+        }
+
+        public override string GetRoutineCode(Routine.RoutineType type, string name)
+        {
+            if (!CheckAvailability())
+            {
+                throw new InvalidOperationException("Database is unavailable!");
+            }
+
+            string typeUppercase = type.ToString().ToUpper();
+            var result = Select($"select ROUTINE_DEFINITION from {Database}.information_schema.routines WHERE ROUTINE_TYPE='{typeUppercase}' AND ROUTINE_NAME='{name}'");
+
+            return result.FirstResult;
         }
 
         public override List<ColumnDescription> GetTableDescription(string tableName)

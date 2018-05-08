@@ -10,16 +10,16 @@ namespace Model.TreeItems
     public class TableBranch : TreeItem
     {
         public string TableName { get; }
-        public ObservableCollection<ColumnDescription> Columns { get; }
+        public List<ColumnDescription> Columns { get; }
 
         public TableBranch(string tableName, IEnumerable<ColumnDescription> columns, DatabaseConnection connection)
         : base(connection)
         {
-            Columns = new ObservableCollection<ColumnDescription>(columns);
+            Columns = new List<ColumnDescription>(columns);
             TableName = tableName;
         }
 
-        public TableBranch(string tableName, ObservableCollection<ColumnDescription> columns, DatabaseConnection connection)
+        public TableBranch(string tableName, List<ColumnDescription> columns, DatabaseConnection connection)
         : base(connection)
         {
             Columns = columns;

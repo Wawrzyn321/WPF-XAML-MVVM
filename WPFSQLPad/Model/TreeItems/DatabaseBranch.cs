@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Model.TreeItems
@@ -12,14 +13,14 @@ namespace Model.TreeItems
         public TableHeader Tables { get; }
         public TableHeader Views { get; }
         public RoutineHeader Routines { get; }
-        public ObservableCollection<HeaderBranch> AllChildren { get; } //tables and views are separated here
+        public List<HeaderBranch> AllChildren { get; } //tables and views are separated here
 
         public DatabaseConnection ConnectionReference { get; }
 
         public DatabaseBranch(string databaseName, 
-            ObservableCollection<TableBranch> tables,
-            ObservableCollection<TableBranch> views, 
-            ObservableCollection<Routine> routines, 
+            List<TableBranch> tables,
+            List<TableBranch> views, 
+            List<Routine> routines, 
             DatabaseConnection connection)
         {
             DatabaseName = databaseName;
@@ -28,7 +29,7 @@ namespace Model.TreeItems
             Routines = new RoutineHeader("Routines", routines, connection);
             ConnectionReference = connection;
 
-            AllChildren = new ObservableCollection<HeaderBranch>
+            AllChildren = new List<HeaderBranch>
             {
                 Tables,
                 Views,

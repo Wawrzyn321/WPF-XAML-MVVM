@@ -32,7 +32,7 @@ namespace Model.TreeItems
 
         public string GetCode()
         {
-            return ConnectionReference.Select($"SHOW CREATE {Type} {Name}").Data[0][2];
+            return ConnectionReference.GetRoutineCode(Type, Name);
         }
 
         public override string ToString()
