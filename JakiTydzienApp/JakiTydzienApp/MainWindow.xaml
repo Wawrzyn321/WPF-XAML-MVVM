@@ -1,0 +1,56 @@
+﻿<Window
+    x:Class="JakiTydzienApp.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="JakiTydzienApp"
+    Width="800"
+    Height="450"
+    DataContext="{Binding Main, Source={StaticResource Locator}}">
+
+    <DockPanel>
+        <StackPanel HorizontalAlignment="Center" DockPanel.Dock="Top">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontWeight" Value="UltraBold" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock
+                Margin="0,100,0,0"
+                FontSize="64"
+                Text="{Binding WeekTypeText, Converter={StaticResource Capitalizer}}" />
+            <TextBlock
+                Margin="0,0,0,24"
+                FontSize="24"
+                Text="{Binding WeekDetailsText, Converter={StaticResource Capitalizer}}"
+                Visibility="{Binding WeekDetailsText, Converter={StaticResource TextDetailsConverter}}" />
+            <TextBlock
+                Margin="30"
+                FontSize="32"
+                Text="{Binding SundayTypeText, Converter={StaticResource Capitalizer}}" />
+        </StackPanel>
+    </DockPanel>
+</Window>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
