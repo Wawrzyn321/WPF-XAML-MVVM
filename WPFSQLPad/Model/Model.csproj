@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="DatabaseConnection.cs" />
     <Compile Include="DatabaseDroppedException.cs" />
+    <Compile Include="ISyntaxHighlighter.cs" />
     <Compile Include="MySQLDatabaseConnection.cs" />
     <Compile Include="DatabaseHelper.cs" />
     <Compile Include="DataTableSerializer.cs" />
@@ -47,6 +48,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="ResultContainer.cs" />
     <Compile Include="SQLServerDatabaseConnection.cs" />
+    <Compile Include="SyntaxHighlighter.cs" />
     <Compile Include="TreeItems\ColumnDescription.cs" />
     <Compile Include="TreeItems\DatabaseBranch.cs" />
     <Compile Include="TreeItems\HeaderBranch.cs" />
