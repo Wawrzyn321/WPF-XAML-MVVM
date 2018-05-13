@@ -12,7 +12,7 @@ namespace JakiTydzienApp.Design
                 tydzien = "PRZYKŁADOWY",
                 details = "Tutaj są dodatkowe informacje",
                 expires = 0,
-                niedziela = "NIEDZIELA PRZYKŁADOWA",
+                niedziela = "PRZYKŁADOWA",
             };
             callback(item, null);
         }

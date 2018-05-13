@@ -1,4 +1,8 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows;
+using GalaSoft.MvvmLight;
 using JakiTydzienApp.Model;
 
 namespace JakiTydzienApp.ViewModel
