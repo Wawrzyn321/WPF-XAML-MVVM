@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using MVVMTest2.Model;
 
 namespace MVVMTest2.ViewModel
@@ -12,13 +15,38 @@ namespace MVVMTest2.ViewModel
     /// Handles counting the remaining words and getting
     /// next words for user.
     /// </summary>
-    public class WordService
+    public class WordService : INotifyPropertyChanged
     {
         public Dictionary<string, string> RemainingWords { get; }
 
-        public int LearnedWordsCount { get; private set; }
-        public string CurrentWord { get; private set; }
-        public string Translation { get; private set; }
+        private int learnedWordsCount;
+        public int LearnedWordsCount
+        {
+            get => learnedWordsCount;
+            set => Set(ref learnedWordsCount, value);
+        }
+
+        private string currentWord;
+        public string CurrentWord
+        {
+            get => currentWord;
+            set => Set(ref currentWord, value);
+        }
+
+        private string translation;
+        public string Translation
+        {
+            get => translation;
+            set => Set(ref translation, value);
+        }
+
+        private int allWordsCount;
+        public int AllWordsCount
+        {
+            get => allWordsCount;
+            set => Set(ref allWordsCount, value);
+        }
+
 
         private KeyValuePair<string, string> currentPair;
         private readonly Random r = new Random();
@@ -26,6 +54,7 @@ namespace MVVMTest2.ViewModel
         public WordService(DataItem item)
         {
             RemainingWords = item.Words;
+            AllWordsCount = item.Words.Count;
             LearnedWordsCount = 0;
 
             PrepareNextPair();
@@ -88,5 +117,32 @@ namespace MVVMTest2.ViewModel
         {
             Translation = RemainingWords[currentPair.Key];
         }
+
+        //check if there's no words to learn left
+        public bool HasLearnedAllTheWords()
+        {
+            return AllWordsCount == LearnedWordsCount;
+        }
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected bool Set<T>(ref T oldValue, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (Equals(oldValue, value))
+            {
+                return false;
+            }
+            else
+            {
+                oldValue = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                return true;
+            }
+        }
+
+        #endregion
+
     }
 }

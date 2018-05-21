@@ -52,33 +52,7 @@ namespace MVVMTest2.ViewModel
             set => Set(ref fileName, value);
         }
 
-        private int allWordsCount;
-        public int AllWordsCount
-        {
-            get => allWordsCount;
-            set => Set(ref allWordsCount, value);
-        }
-
-        private int learnedWordsCount;
-        public int LearnedWordsCount
-        {
-            get => learnedWordsCount;
-            set => Set(ref learnedWordsCount, value);
-        }
-
-        private string currentWord;
-        public string CurrentWord
-        {
-            get => currentWord;
-            set => Set(ref currentWord, value);
-        }
-
-        private string translation;
-        public string Translation
-        {
-            get => translation;
-            set => Set(ref translation, value);
-        }
+        public WordService WordsService => wordsService;
 
         #endregion
 
@@ -101,10 +75,8 @@ namespace MVVMTest2.ViewModel
 
             wordsService = new WordService(item);
             FileName = path;
-            AllWordsCount = item.Words.Count;
 
             InitializeCommands();
-            FetchNextWord();
         }
 
         private void InitializeCommands()
@@ -120,14 +92,6 @@ namespace MVVMTest2.ViewModel
         {
             ShowTranslation();
             MessageBox.Show(Properties.Resources.Startup_NoWordsFound, Properties.Resources.Quiz_AllWordsLearned);
-        }
-
-        private void FetchNextWord()
-        {
-            //get next values from wordService and update the View
-            CurrentWord = wordsService.CurrentWord;
-            Translation = wordsService.Translation;
-            LearnedWordsCount = wordsService.LearnedWordsCount;
         }
 
         #region Command Callbacks
@@ -146,7 +110,7 @@ namespace MVVMTest2.ViewModel
         private void SetWordAsLearned()
         {
             wordsService.SetCurrentWordAsLearned();
-            if (AllWordsCount == wordsService.LearnedWordsCount)
+            if (wordsService.HasLearnedAllTheWords())
             {
                 //finish the quiz
                 Finish();
@@ -154,7 +118,6 @@ namespace MVVMTest2.ViewModel
             else
             {
                 //get next word
-                FetchNextWord();
                 State = QuizState.ShowingWord;
             }
         }
@@ -163,8 +126,6 @@ namespace MVVMTest2.ViewModel
         {
             //set word as to repeat
             wordsService.RepeatCurrentWord();
-            //get next (but not the same)
-            FetchNextWord();
 
             State = QuizState.ShowingWord;
         }
