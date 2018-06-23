@@ -5,7 +5,7 @@ namespace MVVMTest2.ViewModel
     /// <summary>
     /// Entry ViewModel, uses ISwitch to swap the UserControls
     /// </summary>
-    public class MainViewModel : ViewModelBase, ISwitch
+    public class MainViewModel : ViewModelBase, IMainViewModel
     {
 
         public string WindowTitle => Properties.Resources.Title;

@@ -10,9 +10,6 @@ namespace MVVMTest2.Model
     /// </summary>
     public interface IDataService
     {
-        //converter creating pairs (word,translation)
-        WordConverter Converter { get; set; }
-
         //load DataItem from single file
         Task<DataItem> GetData(string path, Direction dir);
 

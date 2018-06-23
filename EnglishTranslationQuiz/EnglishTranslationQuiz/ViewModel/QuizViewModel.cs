@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Windows.Forms;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -17,7 +19,7 @@ namespace MVVMTest2.ViewModel
     /// The "I don't know" and "Again" buttons are doing the same,
     /// they are just here for psychology.
     /// </summary>
-    public class QuizViewModel : ViewModelBase
+    public class QuizViewModel : ViewModelBase, IQuizViewModel
     {
         public enum QuizState
         {
@@ -28,6 +30,7 @@ namespace MVVMTest2.ViewModel
 
         #region Static Texts
 
+        //texts used in XAML
         public string IDontKnowText => Properties.Resources.Quiz_IDontKnow;
         public string AgainText => Properties.Resources.Quiz_Again;
         public string IKnowItText => Properties.Resources.Quiz_Know;
@@ -74,7 +77,7 @@ namespace MVVMTest2.ViewModel
             this.parent = parent;
 
             wordsService = new WordService(item);
-            FileName = path;
+            FileName = Path.GetFileName(path);
 
             InitializeCommands();
         }
@@ -90,8 +93,8 @@ namespace MVVMTest2.ViewModel
 
         private void Finish()
         {
-            ShowTranslation();
             MessageBox.Show(Properties.Resources.Startup_NoWordsFound, Properties.Resources.Quiz_AllWordsLearned);
+            BackToMenu();
         }
 
         #region Command Callbacks

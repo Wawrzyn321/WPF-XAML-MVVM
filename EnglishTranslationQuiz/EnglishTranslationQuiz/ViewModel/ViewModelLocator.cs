@@ -8,13 +8,13 @@ namespace MVVMTest2.ViewModel
     /// </summary>
     public class ViewModelLocator
     {
-        public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
+        public IMainViewModel Main => ServiceLocator.Current.GetInstance<IMainViewModel>();
 
         static ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<IMainViewModel, MainViewModel>();
         }
 
         public static void Cleanup()

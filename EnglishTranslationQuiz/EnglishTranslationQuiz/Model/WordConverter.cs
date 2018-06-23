@@ -55,6 +55,7 @@ namespace MVVMTest2.Model
                         {
                             break;
                         }
+                        
                         if (str[i] == SEPARATOR)
                         {
                             if (i >= str.Length)

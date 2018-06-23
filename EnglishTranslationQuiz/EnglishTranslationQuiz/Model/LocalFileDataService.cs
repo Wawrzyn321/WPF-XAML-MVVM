@@ -30,7 +30,6 @@ namespace MVVMTest2.Model
 
         private async Task AppendFromFile(string path)
         {
-            Converter.Clear();
             using (var sr = new StreamReader(path, Encoding.Default))
             {
                 Converter.Append(Environment.NewLine);

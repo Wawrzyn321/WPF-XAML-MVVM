@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,7 +14,7 @@ namespace MVVMTest2.ViewModel
     /// one for opening a file, second for opening
     /// an entire directory.
     /// </summary>
-    public class StartupViewModel : ViewModelBase
+    public class StartupViewModel : ViewModelBase, IStartupViewModel
     {
         #region Static Texts
 

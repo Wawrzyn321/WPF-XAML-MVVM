@@ -77,9 +77,12 @@
     <Compile Include="Model\LocalFileDataService.cs" />
     <Compile Include="Model\IDataService.cs" />
     <Compile Include="Model\WordConverter.cs" />
+    <Compile Include="ViewModel\Interfaces\IMainViewModel.cs" />
+    <Compile Include="ViewModel\Interfaces\IQuizViewModel.cs" />
+    <Compile Include="ViewModel\Interfaces\IStartupViewModel.cs" />
     <Compile Include="View\Converters\ButtonConverters.cs" />
     <Compile Include="ViewModel\StartupViewModel.cs" />
-    <Compile Include="ViewModel\ISwitch.cs" />
+    <Compile Include="ViewModel\Interfaces\ISwitch.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\WordService.cs" />
     <Compile Include="View\Converters\RatioMultiValueConverter.cs" />
@@ -137,6 +140,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

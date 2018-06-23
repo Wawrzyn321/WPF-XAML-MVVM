@@ -19,6 +19,8 @@ namespace MVVMTest2.ViewModel
     {
         public Dictionary<string, string> RemainingWords { get; }
 
+        #region Observed Properties
+
         private int learnedWordsCount;
         public int LearnedWordsCount
         {
@@ -47,6 +49,7 @@ namespace MVVMTest2.ViewModel
             set => Set(ref allWordsCount, value);
         }
 
+        #endregion
 
         private KeyValuePair<string, string> currentPair;
         private readonly Random r = new Random();
@@ -101,9 +104,13 @@ namespace MVVMTest2.ViewModel
         public void SetCurrentWordAsLearned()
         {
             RemainingWords.Remove(CurrentWord);
+
             LearnedWordsCount++;
 
-            PrepareNextPair();
+            if (!HasLearnedAllTheWords())
+            {
+                PrepareNextPair();
+            }
         }
 
         //just prepare next pair of words
