@@ -20,6 +20,7 @@ namespace Model
         public string Name { get; }
         public string SourceDatabase { get; }
 
+        //shorthands
         public string[] FirstRow => Data[0];
         public string FirstResult => Data[0][0];
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Threading;
 
-namespace Model
+namespace Model.ConnectionModels
 {
     /// <summary>
     /// Timer for DatabaseConnection. Periodically

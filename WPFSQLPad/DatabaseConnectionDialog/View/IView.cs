@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Security;
 using Model;
+using Model.ConnectionModels;
 
-namespace DatabaseConnectionDialog
+namespace DatabaseConnectionDialog.View
 {
     /// <summary>
     /// A contract for connection dialog.

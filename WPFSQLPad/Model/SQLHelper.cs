@@ -23,7 +23,7 @@ namespace Model
     /// <summary>
     /// Collection of helper methods for DB.
     /// </summary>
-    public static class DatabaseHelper
+    public static class SQLHelper
     {
         // ' and " signify start or end of string
         private static readonly char[] escapeCharacters = { '\'', '\"' };

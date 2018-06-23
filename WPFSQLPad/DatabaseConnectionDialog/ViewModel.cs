@@ -6,8 +6,9 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Windows;
 using System.Windows.Input;
+using DatabaseConnectionDialog.View;
 using Model;
-
+using Model.ConnectionModels;
 
 namespace DatabaseConnectionDialog
 {
@@ -81,7 +82,7 @@ namespace DatabaseConnectionDialog
 
             try
             {
-                DatabaseConnection connection = ConnectFucker(str);
+                DatabaseConnection connection = Connect(str);
 
                 if (connection.IsAvailable == false)
                 {
@@ -110,7 +111,7 @@ namespace DatabaseConnectionDialog
             }
         }
 
-        private DatabaseConnection ConnectFucker(SecureString str)
+        private DatabaseConnection Connect(SecureString str)
         {
             if (DatabaseType == DbType.MySQL)
             {

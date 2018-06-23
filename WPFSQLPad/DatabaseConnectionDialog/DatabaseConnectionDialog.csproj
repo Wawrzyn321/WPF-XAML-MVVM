@@ -71,10 +71,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActionCommand.cs" />
-    <Compile Include="IView.cs" />
+    <Compile Include="View\IView.cs" />
     <Compile Include="SecureStringUtility.cs" />
     <Compile Include="ViewModel.cs" />
-    <Page Include="DbConnectionDialog.xaml">
+    <Page Include="View\DbConnectionDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -82,7 +82,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DbConnectionDialog.xaml.cs">
+    <Compile Include="View\DbConnectionDialog.xaml.cs">
       <DependentUpon>DbConnectionDialog.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

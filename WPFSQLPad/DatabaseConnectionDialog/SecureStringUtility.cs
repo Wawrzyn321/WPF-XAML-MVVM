@@ -12,7 +12,7 @@ namespace DatabaseConnectionDialog
         //return ordinary String object
         public static string SecureStringToString(SecureString value)
         {
-            if(value == null) throw new ArgumentException("Argument cannot be null!");
+            if (value == null) throw new ArgumentException("Argument cannot be null!");
 
             IntPtr valuePtr = IntPtr.Zero;
             try

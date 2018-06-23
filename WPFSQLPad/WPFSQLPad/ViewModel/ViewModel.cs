@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Model;
+using Model.ConnectionModels;
 using Model.TreeItems;
 using WPFSQLPad.View;
 
@@ -227,7 +228,7 @@ namespace WPFSQLPad.ViewModel
                 try
                 {
                     //inform user that we recognized their input
-                    queryType = DatabaseHelper.GetQueryType(query);
+                    queryType = SQLHelper.GetQueryType(query);
                     logger.Write($"{i + 1}) Query type is {queryType}, cool.", 1);
                 }
                 catch (ArgumentException)
@@ -330,7 +331,7 @@ namespace WPFSQLPad.ViewModel
             }
 
             //get separate queries
-            var queries = DatabaseHelper.SplitSqlExpression(queryText, CurrentConnection.Delimiter);
+            var queries = SQLHelper.SplitSqlExpression(queryText, CurrentConnection.Delimiter);
             //List<string> queries = new List<string>{ queryText };
 
             if (queries.Count == 0)

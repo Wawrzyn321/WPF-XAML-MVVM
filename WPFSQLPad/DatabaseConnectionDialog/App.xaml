@@ -2,6 +2,6 @@
     x:Class="DbConnectionDialog.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    StartupUri="DbConnectionDialog.xaml">
+    StartupUri="View/DbConnectionDialog.xaml">
     <Application.Resources />
 </Application>

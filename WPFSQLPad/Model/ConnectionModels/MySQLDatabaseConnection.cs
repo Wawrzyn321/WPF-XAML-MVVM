@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Common;
 using Model.TreeItems;
 using MySql.Data.MySqlClient;
 
-namespace Model
+namespace Model.ConnectionModels
 {
 
     /// <summary>

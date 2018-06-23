@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Model.TreeItems;
 
-namespace Model
+namespace Model.ConnectionModels
 {
 
     public enum DbType

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Model.ConnectionModels;
 
 namespace Model.TreeItems
 {

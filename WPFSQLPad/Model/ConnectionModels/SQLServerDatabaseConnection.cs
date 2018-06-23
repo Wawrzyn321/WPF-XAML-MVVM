@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Data.SqlClient;
 using Model.TreeItems;
 
-namespace Model
+namespace Model.ConnectionModels
 {
     public sealed class SQLServerDatabaseConnection : DatabaseConnection
     {

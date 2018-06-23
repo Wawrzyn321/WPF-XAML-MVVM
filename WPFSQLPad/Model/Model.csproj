@@ -36,18 +36,18 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DatabaseConnection.cs" />
+    <Compile Include="ConnectionModels\DatabaseConnection.cs" />
+    <Compile Include="ConnectionModels\ExternalTimerDispatcher.cs" />
     <Compile Include="DatabaseDroppedException.cs" />
     <Compile Include="ISyntaxHighlighter.cs" />
-    <Compile Include="MySQLDatabaseConnection.cs" />
-    <Compile Include="DatabaseHelper.cs" />
+    <Compile Include="ConnectionModels\MySQLDatabaseConnection.cs" />
+    <Compile Include="SQLHelper.cs" />
     <Compile Include="DataTableSerializer.cs" />
-    <Compile Include="ExternalTimerDispatcher.cs" />
     <Compile Include="IMenuItem.cs" />
-    <Compile Include="MenuItemPlaceholder.cs" />
+    <Compile Include="TreeItems\MenuItemPlaceholder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ResultContainer.cs" />
-    <Compile Include="SQLServerDatabaseConnection.cs" />
+    <Compile Include="ConnectionModels\SQLServerDatabaseConnection.cs" />
     <Compile Include="SyntaxHighlighter.cs" />
     <Compile Include="TreeItems\ColumnDescription.cs" />
     <Compile Include="TreeItems\DatabaseBranch.cs" />
@@ -92,5 +92,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

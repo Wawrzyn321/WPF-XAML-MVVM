@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
+//W.I.P.
 namespace Model
 {
     public struct IndicesPair
@@ -18,7 +18,7 @@ namespace Model
             "SELECT", "CREATE", "UPDATE"
         };
 
-        private List<char> Quotations = new List<char>{'\'', '\"'};
+        private readonly List<char> Quotations = new List<char>{'\'', '\"'};
 
 
         public List<IndicesPair> GetHighlightableWords(string s)

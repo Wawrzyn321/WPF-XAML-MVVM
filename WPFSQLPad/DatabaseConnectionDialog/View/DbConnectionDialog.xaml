@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:Model;assembly=Model"
+    xmlns:connectionModels="clr-namespace:Model.ConnectionModels;assembly=Model"
     Title="Connect to database"
     Width="240"
     Height="320"
@@ -17,7 +18,7 @@
             MethodName="GetValues"
             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="model:DbType" />
+                <x:Type TypeName="connectionModels:DbType" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </Window.Resources>

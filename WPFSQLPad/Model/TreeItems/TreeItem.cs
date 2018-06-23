@@ -1,4 +1,6 @@
-﻿namespace Model.TreeItems
+﻿using Model.ConnectionModels;
+
+namespace Model.TreeItems
 {
     public abstract class TreeItem
     {
