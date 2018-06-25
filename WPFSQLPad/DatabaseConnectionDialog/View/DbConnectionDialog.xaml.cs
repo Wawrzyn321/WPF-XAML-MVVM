@@ -2,7 +2,6 @@
 using System.Security;
 using System.Windows;
 using DatabaseConnectionDialog.View;
-using Model;
 using Model.ConnectionModels;
 
 namespace DatabaseConnectionDialog

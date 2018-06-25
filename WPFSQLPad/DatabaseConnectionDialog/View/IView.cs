@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Security;
-using Model;
 using Model.ConnectionModels;
 
 namespace DatabaseConnectionDialog.View

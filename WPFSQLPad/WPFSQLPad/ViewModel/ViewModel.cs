@@ -213,8 +213,8 @@ namespace WPFSQLPad.ViewModel
         {
             var queries = queriesObject as IList<string>;
 
-            var basebase = DatabasesTree.First(branch => branch.ConnectionReference == CurrentConnection);
-            int index = DatabasesTree.IndexOf(basebase);
+            var currentDatabaseBranch = DatabasesTree.First(branch => branch.ConnectionReference == CurrentConnection);
+            int index = DatabasesTree.IndexOf(currentDatabaseBranch);
             bool requireRefresh = false;
 
             string count = queries.Count == 1 ? "query" : "queries";
@@ -242,17 +242,7 @@ namespace WPFSQLPad.ViewModel
                 {
                     try
                     {
-                        ResultContainer result = CurrentConnection.Select(query);
-
-                        logger.Write($"Query successful with {result.Data.Count} results.", 1);
-
-                        //dispatch new tab
-                        Application.Current.Dispatcher.Invoke(new Action<QueryType, ResultContainer>((type, container) =>
-                        {
-                            Tabs.Add(new TabContent(queryType.ToString(), result.ToDataTable()));
-                            SelectedTab = Tabs.Back(); //select last tab
-                            Log = logger.Flush();
-                        }), DispatcherPriority.DataBind, queryType, result);
+                        TryExecuteCommandWithOutput(query, queryType);
                     }
                     catch (Exception err)
                     {
@@ -269,10 +259,7 @@ namespace WPFSQLPad.ViewModel
                 {
                     try
                     {
-                        //just execute statement
-                        int rows = CurrentConnection.ExecuteStatement(query);
-                        logger.Write($"Query successful with {rows} results.", 1);
-                        Application.Current.Dispatcher.Invoke(() => Log = logger.Flush());
+                        TryExecuteCommandWithNoOutput(query);
                     }
                     catch (Exception err)
                     {
@@ -318,6 +305,33 @@ namespace WPFSQLPad.ViewModel
             }, DispatcherPriority.DataBind);
 
         }
+
+        #region Executing SQL Command
+        
+        private void TryExecuteCommandWithNoOutput(string query)
+        {
+            //just execute statement
+            int rows = CurrentConnection.ExecuteStatement(query);
+            logger.Write($"Query successful with {rows} results.", 1);
+            Application.Current.Dispatcher.Invoke(() => Log = logger.Flush());
+        }
+
+        private void TryExecuteCommandWithOutput(string query, QueryType queryType)
+        {
+            ResultContainer result = CurrentConnection.Select(query);
+
+            logger.Write($"Query successful with {result.Data.Count} results.", 1);
+
+            //dispatch new tab
+            Application.Current.Dispatcher.Invoke(new Action<QueryType, ResultContainer>((type, container) =>
+            {
+                Tabs.Add(new TabContent(queryType.ToString(), result.ToDataTable()));
+                SelectedTab = Tabs.Back(); //select last tab
+                Log = logger.Flush();
+            }), DispatcherPriority.DataBind, queryType, result);
+        } 
+
+        #endregion
 
         #region Command Callbacks
 

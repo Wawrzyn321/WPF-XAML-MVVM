@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using Model;
 using Model.ConnectionModels;
 using Model.TreeItems;
 using WPFSQLPad.View;

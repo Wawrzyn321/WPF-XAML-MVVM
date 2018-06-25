@@ -7,7 +7,6 @@ using System.Security;
 using System.Windows;
 using System.Windows.Input;
 using DatabaseConnectionDialog.View;
-using Model;
 using Model.ConnectionModels;
 
 namespace DatabaseConnectionDialog
