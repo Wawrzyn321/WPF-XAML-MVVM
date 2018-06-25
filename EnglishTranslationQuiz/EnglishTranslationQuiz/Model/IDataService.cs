@@ -11,9 +11,9 @@ namespace EnglishTranslationQuiz.Model
     public interface IDataService
     {
         //load DataItem from single file
-        Task<DataItem> GetData(string path, DataItem.TranslationDirection dir);
+        Task<DataItem> GetData(string path, Direction dir);
 
         //combine DataItem from multiple files
-        Task<DataItem> GetData(IList<string> paths, DataItem.TranslationDirection dir, Action<int, int> OnProgress);
+        Task<DataItem> GetData(IList<string> paths, Direction dir, Action<int, int> OnProgress);
     }
 }

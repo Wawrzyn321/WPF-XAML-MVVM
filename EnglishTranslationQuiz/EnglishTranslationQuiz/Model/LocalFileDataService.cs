@@ -41,7 +41,7 @@ namespace EnglishTranslationQuiz.Model
 
         public WordConverter Converter { get; set; }
 
-        public async Task<DataItem> GetData(string path, DataItem.TranslationDirection dir)
+        public async Task<DataItem> GetData(string path, Direction dir)
         {
             await LoadFromFile(path);
             var words = Converter.GetWordsDictionary(dir);
@@ -49,7 +49,7 @@ namespace EnglishTranslationQuiz.Model
             return new DataItem(words, dir);
         }
 
-        public async Task<DataItem> GetData(IList<string> paths, DataItem.TranslationDirection dir, Action<int, int> OnProgress)
+        public async Task<DataItem> GetData(IList<string> paths, Direction dir, Action<int, int> OnProgress)
         {
             for (int i = 0; i < paths.Count; i++)
             {

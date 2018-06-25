@@ -100,6 +100,7 @@ namespace EnglishTranslationQuiz.ViewModel
 
         private void OpenFile()
         {
+            // ReSharper disable once LocalizableElement
             using (OpenFileDialog openFileDialog = new OpenFileDialog { Filter = "Text|*.txt" })
             {
                 if (openFileDialog.ShowDialog() == DialogResult.OK)

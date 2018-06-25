@@ -34,7 +34,7 @@ namespace EnglishTranslationQuiz.Model
         }
 
         //convert string to pairs
-        public Dictionary<string, string> GetWordsDictionary(DataItem.TranslationDirection plToEng)
+        public Dictionary<string, string> GetWordsDictionary(Direction plToEng)
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
             //split StringBuilder into lines
@@ -77,7 +77,7 @@ namespace EnglishTranslationQuiz.Model
 
                 //get key and value based on translation direction
                 string value, key;
-                if (plToEng == DataItem.TranslationDirection.PLToEng)
+                if (plToEng == Direction.PLToEng)
                 {
                     value = str.Substring(0, i);
                     i += 2;
