@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MVVMTest2.Model
+namespace EnglishTranslationQuiz.Model
 {
     /// <summary>
     /// Container for dictionary of

@@ -3,11 +3,12 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
+using EnglishTranslationQuiz.Model;
+using EnglishTranslationQuiz.ViewModel.Interfaces;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
-using MVVMTest2.Model;
 
-namespace MVVMTest2.ViewModel
+namespace EnglishTranslationQuiz.ViewModel
 {
     /// <summary>
     /// Simple ViewModel with title and two buttons:

@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using MVVMTest2.ViewModel;
+using EnglishTranslationQuiz.ViewModel;
 
-namespace MVVMTest2.View.Converters
+namespace EnglishTranslationQuiz.View.Converters
 {
     /// <summary>
     /// A converter for "Show translation" button

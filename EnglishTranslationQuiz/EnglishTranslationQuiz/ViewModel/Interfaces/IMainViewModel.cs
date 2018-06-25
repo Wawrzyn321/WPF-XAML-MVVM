@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 
-namespace MVVMTest2.ViewModel
+namespace EnglishTranslationQuiz.ViewModel.Interfaces
 {
     public interface IMainViewModel : ISwitch
     {

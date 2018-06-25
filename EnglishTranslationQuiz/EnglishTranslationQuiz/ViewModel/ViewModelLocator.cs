@@ -1,7 +1,8 @@
-﻿using GalaSoft.MvvmLight.Ioc;
+﻿using EnglishTranslationQuiz.ViewModel.Interfaces;
+using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 
-namespace MVVMTest2.ViewModel
+namespace EnglishTranslationQuiz.ViewModel
 {
     /// <summary>
     /// Standard MVVM Light ViewModel Locator.

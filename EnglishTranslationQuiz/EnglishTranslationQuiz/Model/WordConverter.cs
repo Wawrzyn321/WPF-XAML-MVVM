@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Direction = MVVMTest2.Model.DataItem.TranslationDirection;
+using Direction = EnglishTranslationQuiz.Model.DataItem.TranslationDirection;
 
-namespace MVVMTest2.Model
+namespace EnglishTranslationQuiz.Model
 {
     /// <summary>
     /// Class converting loaded string of words (kept in
@@ -34,7 +34,7 @@ namespace MVVMTest2.Model
         }
 
         //convert string to pairs
-        public Dictionary<string, string> GetWordsDictionary(Direction plToEng)
+        public Dictionary<string, string> GetWordsDictionary(DataItem.TranslationDirection plToEng)
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
             //split StringBuilder into lines
@@ -77,7 +77,7 @@ namespace MVVMTest2.Model
 
                 //get key and value based on translation direction
                 string value, key;
-                if (plToEng == Direction.PLToEng)
+                if (plToEng == DataItem.TranslationDirection.PLToEng)
                 {
                     value = str.Substring(0, i);
                     i += 2;

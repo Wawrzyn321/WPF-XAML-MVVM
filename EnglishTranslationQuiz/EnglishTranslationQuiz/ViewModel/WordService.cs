@@ -4,9 +4,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using MVVMTest2.Model;
+using EnglishTranslationQuiz.Model;
 
-namespace MVVMTest2.ViewModel
+namespace EnglishTranslationQuiz.ViewModel
 {
     /// <summary>
     /// Container for quiz words as pairs of original

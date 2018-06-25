@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Direction = MVVMTest2.Model.DataItem.TranslationDirection;
+using Direction = EnglishTranslationQuiz.Model.DataItem.TranslationDirection;
 
-namespace MVVMTest2.Model
+namespace EnglishTranslationQuiz.Model
 {
     /// <summary>
     /// Concrete IDataService, loading DataItems
@@ -41,7 +41,7 @@ namespace MVVMTest2.Model
 
         public WordConverter Converter { get; set; }
 
-        public async Task<DataItem> GetData(string path, Direction dir)
+        public async Task<DataItem> GetData(string path, DataItem.TranslationDirection dir)
         {
             await LoadFromFile(path);
             var words = Converter.GetWordsDictionary(dir);
@@ -49,7 +49,7 @@ namespace MVVMTest2.Model
             return new DataItem(words, dir);
         }
 
-        public async Task<DataItem> GetData(IList<string> paths, Direction dir, Action<int, int> OnProgress)
+        public async Task<DataItem> GetData(IList<string> paths, DataItem.TranslationDirection dir, Action<int, int> OnProgress)
         {
             for (int i = 0; i < paths.Count; i++)
             {

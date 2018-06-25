@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using GalaSoft.MvvmLight.Threading;
 
-namespace MVVMTest2
+namespace EnglishTranslationQuiz
 {
     /// <summary>
     /// Interaction logic for App.xaml

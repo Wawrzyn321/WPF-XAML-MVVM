@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace MVVMTest2.View
+namespace EnglishTranslationQuiz.View
 {
     /// <summary>
     /// Interaction logic for StartupView.xaml

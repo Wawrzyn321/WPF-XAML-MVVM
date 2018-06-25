@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace MVVMTest2.View.Converters
+namespace EnglishTranslationQuiz.View.Converters
 {
     /// <summary>
     /// Converter for UI displaying ratio of:

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
-using MVVMTest2.ViewModel;
+using EnglishTranslationQuiz.ViewModel;
 
-namespace MVVMTest2
+namespace EnglishTranslationQuiz
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

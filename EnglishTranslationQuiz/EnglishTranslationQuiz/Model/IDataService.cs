@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Direction = MVVMTest2.Model.DataItem.TranslationDirection;
+using Direction = EnglishTranslationQuiz.Model.DataItem.TranslationDirection;
 
-namespace MVVMTest2.Model
+namespace EnglishTranslationQuiz.Model
 {
     /// <summary>
     /// Interface for data retreiver
@@ -11,9 +11,9 @@ namespace MVVMTest2.Model
     public interface IDataService
     {
         //load DataItem from single file
-        Task<DataItem> GetData(string path, Direction dir);
+        Task<DataItem> GetData(string path, DataItem.TranslationDirection dir);
 
         //combine DataItem from multiple files
-        Task<DataItem> GetData(IList<string> paths, Direction dir, Action<int, int> OnProgress);
+        Task<DataItem> GetData(IList<string> paths, DataItem.TranslationDirection dir, Action<int, int> OnProgress);
     }
 }

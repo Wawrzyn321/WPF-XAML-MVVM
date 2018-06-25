@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace MVVMTest2.ViewModel
+namespace EnglishTranslationQuiz.ViewModel.Interfaces
 {
     public interface IStartupViewModel
     {

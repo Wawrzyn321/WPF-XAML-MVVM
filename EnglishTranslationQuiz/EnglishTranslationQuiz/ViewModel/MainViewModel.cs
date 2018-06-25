@@ -1,6 +1,7 @@
-﻿using GalaSoft.MvvmLight;
+﻿using EnglishTranslationQuiz.ViewModel.Interfaces;
+using GalaSoft.MvvmLight;
 
-namespace MVVMTest2.ViewModel
+namespace EnglishTranslationQuiz.ViewModel
 {
     /// <summary>
     /// Entry ViewModel, uses ISwitch to swap the UserControls
