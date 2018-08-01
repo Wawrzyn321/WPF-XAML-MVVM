@@ -14,8 +14,8 @@ namespace Model
     /// todo add transform(int row) returning column
     public struct ResultContainer
     {
-        public List<DbColumn> Columns;
-        public List<string[]> Data;
+        public List<DbColumn> Columns { get; }
+        public List<string[]> Data { get; }
 
         public string Name { get; }
         public string SourceDatabase { get; }

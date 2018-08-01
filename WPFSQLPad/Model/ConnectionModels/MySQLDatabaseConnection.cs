@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using Model.TreeItems;
 using MySql.Data.MySqlClient;
 
@@ -28,11 +27,6 @@ namespace Model.ConnectionModels
             connectionCheck = new ExternalTimeDispatcher(this);
         }
 
-        protected override DbCommand CreateCommand(string query)
-        {
-            return new MySqlCommand(query, (MySqlConnection)connection);
-        }
-
         protected override void CreateConnection()
         {
             string connectionString = $"server={Server};database={Database};uid={UserId};pwd={password};sslmode=none";
@@ -53,7 +47,7 @@ namespace Model.ConnectionModels
                 throw new InvalidOperationException("Database is unavailable!");
             }
 
-            ResultContainer s = Select("SHOW FULL TABLES");
+            ResultContainer s = PerformSelect("SHOW FULL TABLES");
             var tables = new List<TableBranch>();
             var views = new List<TableBranch>();
             foreach (var data in s.Data)
@@ -85,7 +79,7 @@ namespace Model.ConnectionModels
                 throw new InvalidOperationException("Database is unavailable!");
             }
 
-            ResultContainer s = Select("SHOW FUNCTION STATUS");
+            ResultContainer s = PerformSelect("SHOW FUNCTION STATUS");
             List<Routine> routines = new List<Routine>(s.Data.Count);
 
             foreach (string[] data in s.Data)
@@ -93,7 +87,7 @@ namespace Model.ConnectionModels
                 string name = data[1];
                 string type = data[2];
                 string[] query =
-                    Select($"SELECT param_list, returns FROM mysql.proc WHERE db = '{Database}' AND name = '{name}'").Data[0];
+                    PerformSelect($"SELECT param_list, returns FROM mysql.proc WHERE db = '{Database}' AND name = '{name}'").Data[0];
                 string parameters = query[0];
                 string returnType = query[1];
                 routines.Add(new Routine(name, type, parameters, returnType, this));
@@ -109,7 +103,7 @@ namespace Model.ConnectionModels
                 throw new InvalidOperationException("Database is unavailable!");
             }
 
-            return Select($"SHOW CREATE {type} {name}").Data[0][2];
+            return PerformSelect($"SHOW CREATE {type} {name}").Data[0][2];
         }
 
         public override List<ColumnDescription> GetTableDescription(string tableName)
@@ -119,9 +113,15 @@ namespace Model.ConnectionModels
                 throw new InvalidOperationException("Database is unavailable!");
             }
 
-            List<ColumnDescription> result = new List<ColumnDescription>();
+            List<string[]> data = PerformSelect($"DESC {tableName}").Data;
 
-            foreach (string[] s in Select($"DESC {tableName}").Data)
+            return ExtractTableDescription(data);
+        }
+
+        private List<ColumnDescription> ExtractTableDescription(List<string[]> data)
+        {
+            List<ColumnDescription> result = new List<ColumnDescription>();
+            foreach (string[] s in data)
             {
                 string Name = s[0];
                 string Type = s[1];
@@ -135,6 +135,5 @@ namespace Model.ConnectionModels
 
             return result;
         }
-
     }
 }

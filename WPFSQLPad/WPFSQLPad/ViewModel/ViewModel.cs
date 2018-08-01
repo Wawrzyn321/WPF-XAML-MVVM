@@ -318,7 +318,7 @@ namespace WPFSQLPad.ViewModel
 
         private void TryExecuteCommandWithOutput(string query, QueryType queryType)
         {
-            ResultContainer result = CurrentConnection.Select(query);
+            ResultContainer result = CurrentConnection.PerformSelect(query);
 
             logger.Write($"Query successful with {result.Data.Count} results.", 1);
 

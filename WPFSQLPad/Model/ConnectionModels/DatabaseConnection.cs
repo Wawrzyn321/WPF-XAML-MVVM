@@ -88,8 +88,6 @@ namespace Model.ConnectionModels
             Delimiter = ";";
         }
 
-        protected abstract DbCommand CreateCommand(string query);
-
         protected abstract void CreateConnection();
 
         public abstract bool Ping();
@@ -104,6 +102,10 @@ namespace Model.ConnectionModels
 
         public virtual bool CheckAvailability()
         {
+            if (connection.State != ConnectionState.Open)
+            {
+                return false;
+            }
 
             if (IsPerformingQuery)
             {
@@ -141,32 +143,37 @@ namespace Model.ConnectionModels
             }
             catch (DbException ex)
             {
-                switch (ex.ErrorCode)
-                {
-                    case 0:
-                    case 1042:
-                        LastError = "Cannot connect to server.  Contact administrator";
-                        LastErrorCode = 0;
-                        break;
-                    case 1045:
-                        LastError = "Invalid username/password, please try again";
-                        LastErrorCode = 1045;
-                        break;
-                    case -2147467259:
-                        LastError = "Cannot find database";
-                        LastErrorCode = 1045;
-                        break;
-                    default:
-                        LastError = "Unknown";
-                        LastErrorCode = ex.ErrorCode;
-                        break;
-                }
+                HandleError(ex);
                 return false;
             }
             catch (InvalidOperationException e)
             {
-                Console.WriteLine($"InvalidOperationException in open: (VM): {e.Message}, code: {e}", "SQL Pad");
+                Debug.WriteLine($"InvalidOperationException in open: (VM): {e.Message}, code: {e}", "SQL Pad");
                 return true;
+            }
+        }
+
+        private void HandleError(DbException ex)
+        {
+            switch (ex.ErrorCode)
+            {
+                case 0:
+                case 1042:
+                    LastError = "Cannot connect to server.  Contact administrator";
+                    LastErrorCode = 0;
+                    break;
+                case 1045:
+                    LastError = "Invalid username/password, please try again";
+                    LastErrorCode = 1045;
+                    break;
+                case -2147467259:
+                    LastError = "Cannot find database";
+                    LastErrorCode = 1045;
+                    break;
+                default:
+                    LastError = "Unknown";
+                    LastErrorCode = ex.ErrorCode;
+                    break;
             }
         }
 
@@ -184,14 +191,14 @@ namespace Model.ConnectionModels
             }
             catch (DbException e)
             {
-                Console.WriteLine($"DBexc in open: (VM): {e.Message}, code: {e}", "SQL Pad");
+                Debug.WriteLine($"DBexc in open: (VM): {e.Message}, code: {e}", "SQL Pad");
                 return false;
             }
         }
 
-        public virtual ResultContainer Select(string query)
+        public virtual ResultContainer PerformSelect(string query)
         {
-            if (!CheckAvailability() && connection.State != ConnectionState.Open)
+            if (!CheckAvailability())
             {
                 throw new InvalidOperationException("Database is unavailable!");
             }
@@ -204,7 +211,10 @@ namespace Model.ConnectionModels
             {
                 return new ResultContainer();
             }
-            var cmd = CreateCommand(query);
+
+            var cmd = connection.CreateCommand();
+            cmd.CommandText = query;
+            Debug.Assert(cmd.Connection == connection);
             List<DbColumn> schema;
 
             try
@@ -219,16 +229,8 @@ namespace Model.ConnectionModels
                         for (int i = 0; i < schema.Count; i++)
                         {
                             //assign data to last added element
-                            object result = dataReader[schema[i].ColumnName];
-
-                            if (result is byte[] bytes)
-                            {
-                                results[results.Count - 1][i] = System.Text.Encoding.UTF8.GetString(bytes);
-                            }
-                            else
-                            {
-                                results[results.Count - 1][i] = result.ToString();
-                            }
+                            var result = dataReader[schema[i].ColumnName];
+                            results[results.Count - 1][i] = GetData(result);
                         }
                     }
 
@@ -241,7 +243,10 @@ namespace Model.ConnectionModels
                 {
                     throw new DatabaseDroppedException();
                 }
-                throw;
+                else
+                {
+                    throw;
+                }
             }
             finally
             {
@@ -259,9 +264,11 @@ namespace Model.ConnectionModels
             }
 
             IsPerformingQuery = true;
-            DbCommand cmd = CreateCommand(query);
+            var cmd = connection.CreateCommand();
+            cmd.CommandText = query;
             int rowCount = cmd.ExecuteNonQuery();
             IsPerformingQuery = false;
+
             return rowCount;
         }
 
@@ -275,6 +282,18 @@ namespace Model.ConnectionModels
         public override string ToString()
         {
             return $"DatabaseConnection to {Server} at database {Database}, user: {UserId}";
+        }
+
+        protected string GetData(object result)
+        {
+            if (result is byte[] bytes)
+            {
+                return System.Text.Encoding.UTF8.GetString(bytes);
+            }
+            else
+            {
+                return result.ToString();
+            }
         }
 
         #region INotifyPropertyChanged
