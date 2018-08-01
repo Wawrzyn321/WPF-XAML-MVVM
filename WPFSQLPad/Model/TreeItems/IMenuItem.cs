@@ -1,4 +1,4 @@
-﻿namespace Model
+﻿namespace Model.TreeItems
 {
     /// <summary>
     /// Contract for MenuItem objects.

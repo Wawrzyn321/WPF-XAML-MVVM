@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Data.SqlClient;
 using Model.TreeItems;
 
@@ -28,7 +27,7 @@ namespace Model.ConnectionModels
         {
             string connectionString =
                 $"Data Source={Server};Initial Catalog={Database};User ID={UserId};Password={password}";
-
+            
             connection = new SqlConnection(connectionString);
 
             IsAvailable = OpenConnection();
