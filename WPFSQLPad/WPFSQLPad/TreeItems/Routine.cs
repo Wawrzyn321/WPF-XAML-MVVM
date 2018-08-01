@@ -1,5 +1,6 @@
 ﻿using System;
 using Model.ConnectionModels;
+using WPFSQLPad.ConnectionWrappers;
 
 namespace WPFSQLPad.TreeItems
 {
@@ -16,13 +17,13 @@ namespace WPFSQLPad.TreeItems
         public string Parameters { get; }
         public string ReturnType { get; }
 
-        public Routine(string name, string type, string parameters, string returnType, DatabaseConnection connection)
+        public Routine(string name, string type, string parameters, string returnType, DatabaseConnectionWrapper connection)
         : this(name, (RoutineType)Enum.Parse(typeof(RoutineType), type, true), parameters, returnType, connection)
         {
             
         }
 
-        public Routine(string name, RoutineType type, string parameters, string returnType, DatabaseConnection connection) 
+        public Routine(string name, RoutineType type, string parameters, string returnType, DatabaseConnectionWrapper connection) 
             : base(connection)
         {
             Name = name;

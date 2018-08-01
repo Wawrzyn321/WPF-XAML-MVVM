@@ -13,6 +13,6 @@ namespace DatabaseConnectionDialog.View
         event Action<SecureString> OnConnectButtonClicked;
 
         //finalize and close
-        void ReturnToCaller(DatabaseConnection connection, bool setAsCurrent);
+        void ReturnToCaller(DatabaseConnection connection, bool setAsCurrent, DbType type);
     }
 }

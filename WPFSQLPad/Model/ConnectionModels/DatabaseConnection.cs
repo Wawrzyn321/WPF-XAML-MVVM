@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using Model.TreeItems;
 
 namespace Model.ConnectionModels
 {
@@ -16,59 +13,14 @@ namespace Model.ConnectionModels
         SQLServer,
     }
 
-    public abstract class DatabaseConnection : INotifyPropertyChanged, IDisposable, IMenuItem
+    public abstract class DatabaseConnection : IDisposable
     {
-        #region Observed Properties
+        public string Description { get; protected set; }
+        public bool IsAvailable { get; protected set; }
+        public DbType DatabaseType { get; protected set; }
+        public string Delimiter { get; protected set; }
 
-        #region IMenuItem Members
-
-        protected bool isChoosen;
-        public bool IsChoosen
-        {
-            get => isChoosen;
-            set => Set(ref isChoosen, value);
-        }
-
-        public bool IsPlaceholder => false;
-
-        protected string description;
-        public string Description
-        {
-            get => description;
-            set => Set(ref description, value);
-        }
-
-        #endregion
-
-        protected bool isAvailable;
-        public bool IsAvailable
-        {
-            get => isAvailable;
-            set => Set(ref isAvailable, value);
-        }
-
-        private DbType databaseType;
-        public DbType DatabaseType
-        {
-            get => databaseType;
-            set => Set(ref databaseType, value);
-        }
-
-        private string delimiter;
-        public string Delimiter
-        {
-            get => delimiter;
-            set => Set(ref delimiter, value);
-        }
-
-        private bool isPerformingQuery;
-        public bool IsPerformingQuery
-        {
-            get => isPerformingQuery;
-            set => Set(ref isPerformingQuery, value);
-        } 
-
-        #endregion
+        public bool IsPerformingQuery { get; set; }
 
         public string Server { get; protected set; }
         public string Database { get; protected set; }
@@ -79,26 +31,24 @@ namespace Model.ConnectionModels
         public int LastErrorCode { get; protected set; }
 
         protected ExternalTimeDispatcher connectionCheck;
-        protected const string tableType_View = "VIEW";
+        public const string tableType_View = "VIEW";
 
         protected DbConnection connection;
 
-        protected DatabaseConnection()
+        protected DatabaseConnection(string server, string database, string userId, string password, DbType databaseType)
         {
+            Server = server;
+            Database = database;
+            UserId = userId;
+            this.password = password;
+            DatabaseType = databaseType;
+
             Delimiter = ";";
         }
 
         protected abstract void CreateConnection();
 
         public abstract bool Ping();
-
-        public abstract List<ColumnDescription> GetTableDescription(string tableName);
-
-        public abstract DatabaseBranch GetDatabaseDescription();
-
-        public abstract List<Routine> GetRoutines();
-
-        public abstract string GetRoutineCode(Routine.RoutineType type, string name);
 
         public virtual bool CheckAvailability()
         {
@@ -295,26 +245,6 @@ namespace Model.ConnectionModels
                 return result.ToString();
             }
         }
-
-        #region INotifyPropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected bool Set<T>(ref T oldValue, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (Equals(oldValue, value))
-            {
-                return false;
-            }
-            else
-            {
-                oldValue = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                return true;
-            }
-        }
-
-        #endregion
 
     }
 }

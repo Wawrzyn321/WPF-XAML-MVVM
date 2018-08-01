@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace WPFSQLPad.View
+namespace WPFSQLPad.ViewModel
 {
     /// <summary>
     /// ICommand implementation

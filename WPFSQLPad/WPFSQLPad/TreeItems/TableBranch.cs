@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Model.ConnectionModels;
+using WPFSQLPad.ConnectionWrappers;
 
 namespace WPFSQLPad.TreeItems
 {
@@ -12,14 +13,14 @@ namespace WPFSQLPad.TreeItems
         public string TableName { get; }
         public List<ColumnDescription> Columns { get; }
 
-        public TableBranch(string tableName, IEnumerable<ColumnDescription> columns, DatabaseConnection connection)
+        public TableBranch(string tableName, IEnumerable<ColumnDescription> columns, DatabaseConnectionWrapper connection)
         : base(connection)
         {
             Columns = new List<ColumnDescription>(columns);
             TableName = tableName;
         }
 
-        public TableBranch(string tableName, List<ColumnDescription> columns, DatabaseConnection connection)
+        public TableBranch(string tableName, List<ColumnDescription> columns, DatabaseConnectionWrapper connection)
         : base(connection)
         {
             Columns = columns;

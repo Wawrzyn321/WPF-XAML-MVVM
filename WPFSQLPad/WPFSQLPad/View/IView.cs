@@ -1,6 +1,7 @@
 ﻿using System;
 using Model.ConnectionModels;
-using Model.TreeItems;
+using WPFSQLPad.ConnectionWrappers;
+using WPFSQLPad.TreeItems;
 
 namespace WPFSQLPad.View
 {
@@ -22,7 +23,7 @@ namespace WPFSQLPad.View
         event Action<TabContent> OnExportTabCSVRequested;
 
         //change current DB
-        event Action<DatabaseConnection> OnDatabaseChoiceRequested;
+        event Action<DatabaseConnectionWrapper> OnDatabaseChoiceRequested;
 
         //close results tabs
         event Action OnCloseAllTabsRequested;

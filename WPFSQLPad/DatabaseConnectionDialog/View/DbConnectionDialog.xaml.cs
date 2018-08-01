@@ -15,6 +15,7 @@ namespace DatabaseConnectionDialog
 
         public DatabaseConnection Connection { get; private set; }
         public bool SetAsCurrent { get; private set; }
+        public DbType DatabaseType { get; private set; }
 
         public DbConnectionDialog()
         {
@@ -30,10 +31,11 @@ namespace DatabaseConnectionDialog
             OnConnectButtonClicked?.Invoke(password);
         }
 
-        public void ReturnToCaller(DatabaseConnection connection, bool setAsCurrent)
+        public void ReturnToCaller(DatabaseConnection connection, bool setAsCurrent, DbType type)
         {
             Connection = connection;
             SetAsCurrent = setAsCurrent;
+            DatabaseType = type;
             DialogResult = connection != null;
             Close();
         }

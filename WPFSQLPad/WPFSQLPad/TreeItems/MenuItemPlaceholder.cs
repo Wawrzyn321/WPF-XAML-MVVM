@@ -1,6 +1,4 @@
-﻿using Model;
-
-namespace WPFSQLPad.TreeItems
+﻿namespace WPFSQLPad.TreeItems
 {
     /// <summary>
     /// Placeholder used when there's no DBs connected yet.

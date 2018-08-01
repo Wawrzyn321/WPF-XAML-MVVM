@@ -11,7 +11,8 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Model;
 using Model.ConnectionModels;
-using Model.TreeItems;
+using WPFSQLPad.ConnectionWrappers;
+using WPFSQLPad.TreeItems;
 using WPFSQLPad.View;
 
 namespace WPFSQLPad.ViewModel
@@ -52,8 +53,8 @@ namespace WPFSQLPad.ViewModel
             set => Set(ref connections, value);
         }
 
-        private DatabaseConnection currentConnection;
-        public DatabaseConnection CurrentConnection
+        private DatabaseConnectionWrapper currentConnection;
+        public DatabaseConnectionWrapper CurrentConnection
         {
             get => currentConnection;
             set => Set(ref currentConnection, value);
@@ -177,9 +178,23 @@ namespace WPFSQLPad.ViewModel
         }
 
         //add new connection
-        public bool AddDatabaseConnection(DatabaseConnection newConnection, bool setAsCurrent)
+        public bool AddDatabaseConnection(DatabaseConnection newConnection, bool setAsCurrent, DbType databaseType)
         {
-            DatabaseBranch databaseDescription = newConnection.GetDatabaseDescription();
+            DatabaseConnectionWrapper wrapper = null;
+
+            switch (databaseType)
+            {
+                case DbType.MySQL:
+                    wrapper = new MySqlConnectionWrapper(newConnection);
+                    break;
+                case DbType.SQLServer:
+                    wrapper = new SqlServerConnectionWrapper(newConnection);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(databaseType), databaseType, null);
+            }
+
+            DatabaseBranch databaseDescription = wrapper.GetDatabaseDescription();
             if (!DatabasesTree.Contains(databaseDescription))
             {
                 DatabasesTree.Add(databaseDescription);
@@ -192,10 +207,10 @@ namespace WPFSQLPad.ViewModel
                 {
                     connections.Clear();
                 }
-                connections.Add(newConnection);
+                connections.Add(wrapper);
                 if (setAsCurrent)
                 {
-                    ChooseDatabase(newConnection);
+                    ChooseDatabase(wrapper);
                 }
 
                 Log = logger.Flush();
@@ -211,7 +226,7 @@ namespace WPFSQLPad.ViewModel
         //thread for executing queries list
         private void QueriesExecutionThread(object queriesObject)
         {
-            var queries = queriesObject as IList<string>;
+            var queries = (IList<string>)queriesObject;
 
             var currentDatabaseBranch = DatabasesTree.First(branch => branch.ConnectionReference == CurrentConnection);
             int index = DatabasesTree.IndexOf(currentDatabaseBranch);
@@ -311,14 +326,14 @@ namespace WPFSQLPad.ViewModel
         private void TryExecuteCommandWithNoOutput(string query)
         {
             //just execute statement
-            int rows = CurrentConnection.ExecuteStatement(query);
+            int rows = CurrentConnection.connectionReference.ExecuteStatement(query);
             logger.Write($"Query successful with {rows} results.", 1);
             Application.Current.Dispatcher.Invoke(() => Log = logger.Flush());
         }
 
         private void TryExecuteCommandWithOutput(string query, QueryType queryType)
         {
-            ResultContainer result = CurrentConnection.PerformSelect(query);
+            ResultContainer result = CurrentConnection.connectionReference.PerformSelect(query);
 
             logger.Write($"Query successful with {result.Data.Count} results.", 1);
 
@@ -373,11 +388,11 @@ namespace WPFSQLPad.ViewModel
         //add new DB connection using DBCollectionDialog
         private void AddConnection_OnClick()
         {
-            DatabaseConnectionDialog.DbConnectionDialog d = new DatabaseConnectionDialog.DbConnectionDialog();
+            var dialog = new DatabaseConnectionDialog.DbConnectionDialog();
 
-            if (d.ShowDialog() == true)
+            if (dialog.ShowDialog() == true)
             {
-                AddDatabaseConnection(d.Connection, d.SetAsCurrent);
+                AddDatabaseConnection(dialog.Connection, dialog.SetAsCurrent, dialog.DatabaseType);
             }
         }
 
@@ -410,7 +425,7 @@ namespace WPFSQLPad.ViewModel
         #region View Event Callbacks
 
         //choose DB as current
-        private void ChooseDatabase(DatabaseConnection choosenDatabase)
+        private void ChooseDatabase(DatabaseConnectionWrapper choosenDatabase)
         {
             foreach (IMenuItem connection in Connections)
             {
@@ -484,7 +499,7 @@ namespace WPFSQLPad.ViewModel
             try
             {
                 DatabasesTree[DatabasesTree.IndexOf(branch)] = branch.ConnectionReference.GetDatabaseDescription();
-                logger.WriteLine($"Refreshed connection to {branch.ConnectionReference}.");
+                logger.WriteLine($"Refreshed connection to {branch.ConnectionReference.connectionReference}.");
             }
             catch (DatabaseDroppedException)
             {
@@ -498,9 +513,9 @@ namespace WPFSQLPad.ViewModel
         //close database connection
         private void CloseDatabaseConnection(DatabaseBranch branch)
         {
-            branch.ConnectionReference.CloseConnection(true);
+            branch.ConnectionReference.connectionReference.CloseConnection(true);
             DatabasesTree.Remove(branch);
-            logger.WriteLine($"Closed connection to {branch.ConnectionReference}.");
+            logger.WriteLine($"Closed connection to {branch.ConnectionReference.connectionReference}.");
             Log = logger.Flush();
         }
 

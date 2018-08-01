@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using Model.ConnectionModels;
-using Model.TreeItems;
+using WPFSQLPad.ConnectionWrappers;
+using WPFSQLPad.TreeItems;
 using WPFSQLPad.View;
+using WPFSQLPad.ViewModel;
 
 namespace WPFSQLPad
 {
@@ -18,7 +19,7 @@ namespace WPFSQLPad
         public event Action<TabContent> OnCloseTabRequested;
         public event Action<TabContent> OnExportTabXMLRequested;
         public event Action<TabContent> OnExportTabCSVRequested;
-        public event Action<DatabaseConnection> OnDatabaseChoiceRequested;
+        public event Action<DatabaseConnectionWrapper> OnDatabaseChoiceRequested;
         public event Action OnCloseAllTabsRequested;
         public event Action<DatabaseBranch> OnDatabaseRefreshRequested;
         public event Action<DatabaseBranch> OnDatabaseCloseRequested;
@@ -47,7 +48,7 @@ namespace WPFSQLPad
 
         private void InitializeCommands()
         {
-            ChooseDatabaseCommand = new ActionCommand<DatabaseConnection>(connection => OnDatabaseChoiceRequested?.Invoke(connection));
+            ChooseDatabaseCommand = new ActionCommand<DatabaseConnectionWrapper>(connection => OnDatabaseChoiceRequested?.Invoke(connection));
             CloseTabCommand = new ActionCommand<TabContent>(content => OnCloseTabRequested?.Invoke(content));
             ExportTabXMLCommand = new ActionCommand<TabContent>(content => OnExportTabXMLRequested?.Invoke(content));
             ExportTabCSVCommand = new ActionCommand<TabContent>(content => OnExportTabCSVRequested?.Invoke(content));

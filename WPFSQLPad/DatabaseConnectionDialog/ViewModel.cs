@@ -68,7 +68,7 @@ namespace DatabaseConnectionDialog
             Database = "world";
             UserID = "root";
 
-            CancelCommand = new ActionCommand(() => view.ReturnToCaller(null, false));
+            CancelCommand = new ActionCommand(() => view.ReturnToCaller(null, false, DatabaseType));
             SetAsCurrent = true;
         }
 
@@ -90,7 +90,7 @@ namespace DatabaseConnectionDialog
                     return;
                 }
 
-                view.ReturnToCaller(connection, SetAsCurrent);
+                view.ReturnToCaller(connection, SetAsCurrent, DatabaseType);
             }
             catch (DbException e)
             {

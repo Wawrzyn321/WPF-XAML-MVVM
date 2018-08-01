@@ -1,12 +1,13 @@
 ﻿using Model.ConnectionModels;
+using WPFSQLPad.ConnectionWrappers;
 
 namespace WPFSQLPad.TreeItems
 {
     public abstract class TreeItem
     {
-        public DatabaseConnection ConnectionReference { get; protected set; }
+        public DatabaseConnectionWrapper ConnectionReference { get; protected set; }
 
-        protected TreeItem(DatabaseConnection connectionReference)
+        protected TreeItem(DatabaseConnectionWrapper connectionReference)
         {
             ConnectionReference = connectionReference;
         }

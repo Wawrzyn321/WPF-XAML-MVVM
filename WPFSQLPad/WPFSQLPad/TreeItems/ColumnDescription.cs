@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Model.ConnectionModels;
+using WPFSQLPad.ConnectionWrappers;
 
 namespace WPFSQLPad.TreeItems
 {
@@ -18,7 +19,7 @@ namespace WPFSQLPad.TreeItems
         public string Default { get; set; }
         public string Extra { get; set; }
 
-        public ColumnDescription(string name, string type, bool canBeNull, string key, string defaultValue, string extra, DatabaseConnection connection)
+        public ColumnDescription(string name, string type, bool canBeNull, string key, string defaultValue, string extra, DatabaseConnectionWrapper connection)
             : base(connection)
         {
             Name = name;
@@ -29,7 +30,7 @@ namespace WPFSQLPad.TreeItems
             Extra = extra;
         }
 
-        public ColumnDescription(string name, string type, bool canBeNull, DatabaseConnection connection)
+        public ColumnDescription(string name, string type, bool canBeNull, DatabaseConnectionWrapper connection)
             : base(connection)
         {
             Name = name;

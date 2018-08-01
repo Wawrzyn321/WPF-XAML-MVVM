@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Model.ConnectionModels;
+using WPFSQLPad.ConnectionWrappers;
 
 namespace WPFSQLPad.TreeItems
 {
@@ -15,13 +16,13 @@ namespace WPFSQLPad.TreeItems
         public RoutineHeader Routines { get; }
         public List<HeaderBranch> AllChildren { get; } //tables and views are separated here
 
-        public DatabaseConnection ConnectionReference { get; }
+        public DatabaseConnectionWrapper ConnectionReference { get; }
 
         public DatabaseBranch(string databaseName, 
             List<TableBranch> tables,
             List<TableBranch> views, 
             List<Routine> routines, 
-            DatabaseConnection connection)
+            DatabaseConnectionWrapper connection)
         {
             DatabaseName = databaseName;
             Tables = new TableHeader("Tables", tables, connection);

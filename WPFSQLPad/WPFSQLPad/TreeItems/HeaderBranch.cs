@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Model.ConnectionModels;
+using WPFSQLPad.ConnectionWrappers;
 
 namespace WPFSQLPad.TreeItems
 {
@@ -11,7 +12,7 @@ namespace WPFSQLPad.TreeItems
     {
         public string HeaderName { get; }
 
-        protected HeaderBranch(string headerName, DatabaseConnection connection) : base(connection)
+        protected HeaderBranch(string headerName, DatabaseConnectionWrapper connection) : base(connection)
         {
             HeaderName = headerName;
         }
@@ -22,7 +23,7 @@ namespace WPFSQLPad.TreeItems
     {
         public List<TableBranch> Items { get; }
 
-        public TableHeader(string headerName, List<TableBranch> items, DatabaseConnection connection) 
+        public TableHeader(string headerName, List<TableBranch> items, DatabaseConnectionWrapper connection) 
             : base(headerName, connection)
         {
             Items = items;
@@ -34,7 +35,7 @@ namespace WPFSQLPad.TreeItems
     {
         public List<Routine> Routines { get; }
 
-        public RoutineHeader(string headerName, List<Routine> routines, DatabaseConnection connection)
+        public RoutineHeader(string headerName, List<Routine> routines, DatabaseConnectionWrapper connection)
             : base(headerName, connection)
         {
             Routines = routines;

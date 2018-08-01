@@ -46,6 +46,9 @@
     <Reference Include="MySql.Data, Version=8.0.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.8.0.12\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -77,6 +80,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConnectionWrappers\DatabaseConnectionWrapper.cs" />
+    <Compile Include="ConnectionWrappers\DatabaseDataExtractor.cs" />
+    <Compile Include="ConnectionWrappers\MySqlConnectionWrapper.cs" />
+    <Compile Include="ConnectionWrappers\MySqlDatabaseExtractor.cs" />
+    <Compile Include="ConnectionWrappers\SqlServerConnectionWrapper.cs" />
+    <Compile Include="ConnectionWrappers\SqlServerDatabaseDataExtrator.cs" />
+    <Compile Include="TreeItems\ColumnDescription.cs" />
+    <Compile Include="TreeItems\DatabaseBranch.cs" />
+    <Compile Include="TreeItems\HeaderBranch.cs" />
+    <Compile Include="TreeItems\IMenuItem.cs" />
+    <Compile Include="TreeItems\MenuItemPlaceholder.cs" />
+    <Compile Include="TreeItems\Routine.cs" />
+    <Compile Include="TreeItems\TableBranch.cs" />
+    <Compile Include="TreeItems\TreeItem.cs" />
     <Compile Include="ViewModel\ActionCommand.cs" />
     <Compile Include="View\AvailabilityToColorConverter.cs" />
     <Compile Include="View\IView.cs" />

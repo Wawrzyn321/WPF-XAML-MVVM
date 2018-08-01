@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:data="clr-namespace:System.Data;assembly=System.Data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:treeItems="clr-namespace:Model.TreeItems;assembly=Model"
+    xmlns:treeItems="clr-namespace:WPFSQLPad.TreeItems"
     xmlns:view="clr-namespace:WPFSQLPad.View"
     x:Name="WPFWindow"
     Title="WPF SQLPad"
@@ -97,7 +97,7 @@
                                     Width="8"
                                     Height="8"
                                     Margin="2,4,2,2"
-                                    Fill="{Binding ConnectionReference.IsAvailable, Converter={StaticResource AvailabilityToColorConverter}}" />
+                                    Fill="{Binding ConnectedDBWrapper.IsAvailable, Converter={StaticResource AvailabilityToColorConverter}}" />
                             </WrapPanel>
 
 
