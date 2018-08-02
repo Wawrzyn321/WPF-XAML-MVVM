@@ -25,11 +25,12 @@ namespace WPFSQLPad.ViewModel
     {
         #region Observed properties
 
-        private ObservableCollection<TabContent> tabs;
-        public ObservableCollection<TabContent> Tabs
+        public ObservableCollection<TabContent> Tabs => tabController.Tabs;
+
+        public TabContent SelectedTab
         {
-            get => tabs;
-            set => Set(ref tabs, value);
+            get => tabController.SelectedTab;
+            set => tabController.SelectedTab = value;
         }
 
         private string queryText;
@@ -45,7 +46,6 @@ namespace WPFSQLPad.ViewModel
             get => log;
             set => Set(ref log, value);
         }
-
 
         private ObservableCollection<IMenuItem> connections;
         public ObservableCollection<IMenuItem> Connections
@@ -67,14 +67,7 @@ namespace WPFSQLPad.ViewModel
             get => databasesTree;
             set => Set(ref databasesTree, value);
         }
-
-        private TabContent selectedTab;
-        public TabContent SelectedTab
-        {
-            get => selectedTab;
-            set => Set(ref selectedTab, value);
-        }
-
+        
         private bool clearPreviousResults;
         public bool ClearPreviousResults
         {
@@ -113,6 +106,7 @@ namespace WPFSQLPad.ViewModel
 
         private readonly Logger logger;
         private readonly IView view;
+        private readonly TabController tabController;
         private Thread queryThread;
 
         public ViewModel(IView view)
@@ -121,6 +115,7 @@ namespace WPFSQLPad.ViewModel
             StopOnError = true;
 
             logger = new Logger(this);
+            tabController = new TabController(logger);
             AssignViewEvents();
             InitializeObservables();
             InitializeCommands();
@@ -129,22 +124,23 @@ namespace WPFSQLPad.ViewModel
         //subscribe to view events
         private void AssignViewEvents()
         {
-            view.OnExportTabXMLRequested += ExportTabAsXML;
-            view.OnExportTabCSVRequested += ExportTabAsCSV;
-            view.OnCloseTabRequested += CloseTab;
+            view.OnCloseTabRequested += tabController.CloseTab;
+            view.OnCloseAllTabsRequested += tabController.CloseAllTabs;
+            view.OnExportTabXMLRequested += tabController.ExportTabAsXml;
+            view.OnExportTabCSVRequested += tabController.ExportTabAsCsv;
+
             view.OnDatabaseChoiceRequested += ChooseDatabase;
-            view.OnCloseAllTabsRequested += CloseAllTabs;
             view.OnDatabaseRefreshRequested += RefreshDatabase;
             view.OnSetDatabaseAsCurrentRequested += SetConnectionAsCurrent;
             view.OnDatabaseCloseRequested += CloseDatabaseConnection;
-            view.OnRoutineSourceRequested += CopyRoutineSource;
             view.OnCloseAllConnectionsRequested += CloseAllConnections;
+
+            view.OnRoutineSourceRequested += CopyRoutineSource;
         }
 
         //initialize collections
         private void InitializeObservables()
         {
-            Tabs = new ObservableCollection<TabContent>();
             DatabasesTree = new ObservableCollection<DatabaseBranch>();
             Connections = new ObservableCollection<IMenuItem> { new MenuItemPlaceholder() };
         }
@@ -152,14 +148,16 @@ namespace WPFSQLPad.ViewModel
         //initialize ICommands
         private void InitializeCommands()
         {
+            ClearLogCommand = new ActionCommand(logger.Clear);
+            CopyLogCommand = new ActionCommand(logger.CopyToClipboard);
+
             ExecuteSqlCommand = new ActionCommand(ExecuteQuery_OnClick, () => !IsQuerying);
-            ClearLogCommand = new ActionCommand(ClearLog_OnClick);
             AddConnectionCommand = new ActionCommand(AddConnection_OnClick);
-            CopyLogCommand = new ActionCommand(CopyLog_OnClick);
-            CloseCommand = new ActionCommand(() => Environment.Exit(0));
             CloseConnectionCommand = new ActionCommand(RemoveConnection_OnClick);
             StopExecutingCommand = new ActionCommand(StopExecuting);
             CloseAllConnectionsCommand = new ActionCommand(CloseAllConnections);
+
+            CloseCommand = new ActionCommand(() => Environment.Exit(0));
         }
 
         //remove connection from collection
@@ -353,8 +351,7 @@ namespace WPFSQLPad.ViewModel
             //dispatch new tab
             Application.Current.Dispatcher.Invoke(new Action<QueryType, ResultContainer>((type, container) =>
             {
-                Tabs.Add(new TabContent(queryType.ToString(), result.ToDataTable()));
-                SelectedTab = Tabs.Back(); //select last tab
+                tabController.Add(new TabContent(queryType.ToString(), result.ToDataTable()));
                 logger.Flush();
             }), DispatcherPriority.DataBind, queryType, result);
         } 
@@ -385,17 +382,10 @@ namespace WPFSQLPad.ViewModel
             {
                 if (ClearPreviousResults)
                 {
-                    Tabs.Clear();
+                    tabController.CloseAllTabs();
                 }
                 ExecuteQueries(queries);
             }
-        }
-
-        //clear log
-        private void ClearLog_OnClick()
-        {
-            logger.Clear();
-            logger.Flush();
         }
 
         //add new DB connection using DBCollectionDialog
@@ -408,15 +398,7 @@ namespace WPFSQLPad.ViewModel
                 AddDatabaseConnection(dialog.Connection, dialog.SetAsCurrent, dialog.DatabaseType);
             }
         }
-
-        //copy log to clipboard
-        private void CopyLog_OnClick()
-        {
-            Clipboard.SetText(Log);
-            logger.WriteLine("Log has been copied to clipboard.");
-            logger.Flush();
-        }
-
+        
         //remove connection using "Close connection" button
         private void RemoveConnection_OnClick()
         {
@@ -449,48 +431,6 @@ namespace WPFSQLPad.ViewModel
             CurrentConnection = choosenDatabase;
 
             logger.WriteLine($"Set database to {choosenDatabase.Description}.");
-            logger.Flush();
-        }
-
-        //close given result tab
-        private void CloseTab(TabContent content)
-        {
-            Tabs.Remove(content);
-        }
-
-        //export to XML
-        private void ExportTabAsXML(TabContent tabContent)
-        {
-            if (DataTableSerializer.SerializeAsXML(tabContent.Data))
-            {
-                logger.WriteLine("\nSaved the table as XML.");
-            }
-            else
-            {
-                logger.WriteLine("\nCould not save XML file!.");
-            }
-            logger.Flush();
-        }
-
-        //export to CSV
-        private void ExportTabAsCSV(TabContent tabContent)
-        {
-            if (DataTableSerializer.SerializeAsCSV(tabContent.Data))
-            {
-                logger.WriteLine("\nSaved the table as CSV.");
-            }
-            else
-            {
-                logger.WriteLine("\nCould not save CSV file!.");
-            }
-            logger.Flush();
-        }
-
-        //close all result tabs
-        private void CloseAllTabs()
-        {
-            Tabs.Clear();
-            logger.WriteLine("Closed all tabs.");
             logger.Flush();
         }
 

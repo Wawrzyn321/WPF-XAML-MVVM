@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Windows;
 
 namespace WPFSQLPad.ViewModel
 {
@@ -43,6 +44,14 @@ namespace WPFSQLPad.ViewModel
         public void Clear()
         {
             logBuilder.Clear();
+            Flush();
+        }
+
+        public void CopyToClipboard()
+        {
+            Clipboard.SetText(logBuilder.ToString());
+            WriteLine("Log has been copied to clipboard.");
+            Flush();
         }
     }
 }
