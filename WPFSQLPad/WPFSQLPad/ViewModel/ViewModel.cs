@@ -39,7 +39,6 @@ namespace WPFSQLPad.ViewModel
             set => tabController.ClearPreviousResults = value;
         }
 
-
         private string queryText;
         public string QueryText
         {
@@ -52,6 +51,22 @@ namespace WPFSQLPad.ViewModel
         {
             get => log;
             set => Set(ref log, value);
+        }
+
+        public ObservableCollection<IMenuItem> Connections => connectionContainer.Connections;
+        public DatabaseConnectionWrapper CurrentConnection => connectionContainer.CurrentConnection;
+        public ObservableCollection<DatabaseBranch> DatabasesTree => connectionContainer.DatabasesTree;
+
+        public bool StopOnError
+        {
+            get => connectionContainer.StopOnError;
+            set => connectionContainer.StopOnError = value;
+        } 
+        
+        public bool IsQuerying
+        {
+            get => connectionContainer.IsQuerying;
+            set => connectionContainer.IsQuerying = value;
         }
 
         #endregion
@@ -73,18 +88,15 @@ namespace WPFSQLPad.ViewModel
         private readonly IView view;
         private readonly TabController tabController;
         private readonly ConnectionContainer connectionContainer;
-        private Thread queryThread;
 
         public ViewModel(IView view)
         {
             this.view = view;
-            StopOnError = true;
 
             logger = new Logger(this);
             tabController = new TabController(logger);
-            connectionContainer = new ConnectionContainer(logger);
+            connectionContainer = new ConnectionContainer(logger, tabController);
             AssignViewEvents();
-            InitializeObservables();
             InitializeCommands();
         }
 
@@ -96,22 +108,14 @@ namespace WPFSQLPad.ViewModel
             view.OnExportTabXMLRequested += tabController.ExportTabAsXml;
             view.OnExportTabCSVRequested += tabController.ExportTabAsCsv;
 
-            view.OnDatabaseChoiceRequested += ChooseDatabase;
-            view.OnDatabaseRefreshRequested += RefreshDatabase;
-            view.OnSetDatabaseAsCurrentRequested += SetConnectionAsCurrent;
-            view.OnDatabaseCloseRequested += CloseDatabaseConnection;
-            view.OnCloseAllConnectionsRequested += CloseAllConnections;
-
-            view.OnRoutineSourceRequested += CopyRoutineSource;
+            view.OnDatabaseChoiceRequested += connectionContainer.ChooseDatabase;
+            view.OnDatabaseRefreshRequested += connectionContainer.RefreshDatabase;
+            view.OnSetDatabaseAsCurrentRequested += connectionContainer.SetConnectionAsCurrent;
+            view.OnDatabaseCloseRequested += connectionContainer.CloseDatabaseConnection;
+            view.OnCloseAllConnectionsRequested += connectionContainer.CloseAllConnections;
+            view.OnRoutineSourceRequested += connectionContainer.CopyRoutineSource;
         }
-
-        //initialize collections
-        private void InitializeObservables()
-        {
-            DatabasesTree = new ObservableCollection<DatabaseBranch>();
-            Connections = new ObservableCollection<IMenuItem> { new MenuItemPlaceholder() };
-        }
-
+        
         //initialize ICommands
         private void InitializeCommands()
         {
@@ -121,210 +125,12 @@ namespace WPFSQLPad.ViewModel
             ExecuteSqlCommand = new ActionCommand(ExecuteQuery_OnClick, () => !IsQuerying);
             AddConnectionCommand = new ActionCommand(AddConnection_OnClick);
             CloseConnectionCommand = new ActionCommand(RemoveConnection_OnClick);
-            StopExecutingCommand = new ActionCommand(StopExecuting);
-            CloseAllConnectionsCommand = new ActionCommand(CloseAllConnections);
+
+            StopExecutingCommand = new ActionCommand(connectionContainer.StopExecuting);
+            CloseAllConnectionsCommand = new ActionCommand(connectionContainer.CloseAllConnections);
 
             CloseCommand = new ActionCommand(() => Environment.Exit(0));
         }
-
-        //remove connection from collection
-        public void RemoveConnection(DatabaseBranch branch)
-        {
-            DatabasesTree.Remove(branch);
-            Connections.Remove(branch.Wrapper);
-
-            if (CurrentConnection == branch.Wrapper)
-            {
-                CurrentConnection = null;
-            }
-
-            if (Connections.Count == 0)
-            {
-                Connections.Add(new MenuItemPlaceholder());
-            }
-        }
-
-        //execute given commands
-        public void ExecuteQueries(IList<string> queries)
-        {
-            IsQuerying = true;
-            queryThread = new Thread(QueriesExecutionThread);
-            queryThread.Start(queries);
-        }
-
-        //add new connection
-        public bool AddDatabaseConnection(DatabaseConnection newConnection, bool setAsCurrent, DbType databaseType)
-        {
-            DatabaseConnectionWrapper wrapper = null;
-
-            switch (databaseType)
-            {
-                case DbType.MySQL:
-                    wrapper = new MySqlConnectionWrapper(newConnection);
-                    break;
-                case DbType.SQLServer:
-                    wrapper = new SqlServerConnectionWrapper(newConnection);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(databaseType), databaseType, null);
-            }
-
-            DatabaseBranch databaseDescription = wrapper.GetDatabaseDescription();
-            if (!DatabasesTree.Contains(databaseDescription))
-            {
-                DatabasesTree.Add(databaseDescription);
-                MessageBox.Show($"Succesfully connected to {newConnection.Database} @{newConnection.Server}.", "SQL Pad");
-
-                logger.Write($"New connection: {newConnection}.");
-
-                //remove placeholder as we finally have an element
-                if (connections[0].IsPlaceholder)
-                {
-                    connections.Clear();
-                }
-                connections.Add(wrapper);
-                if (setAsCurrent)
-                {
-                    ChooseDatabase(wrapper);
-                }
-
-                logger.Flush();
-                return true;
-            }
-            else
-            {
-                MessageBox.Show($"Succesfully connected to {newConnection.Database} @{newConnection.Server}, but this connection already exists.", "SQL Pad");
-                return false;
-            }
-        }
-
-        //thread for executing queries list
-        private void QueriesExecutionThread(object queriesObject)
-        {
-            var queries = (IList<string>)queriesObject;
-
-            var currentDatabaseBranch = DatabasesTree.First(branch => branch.Wrapper == CurrentConnection);
-            bool requireRefresh = false;
-
-            string count = queries.Count == 1 ? "query" : "queries";
-            logger.Write($"Executing command with {queries.Count} {count}.");
-
-            for (int i = 0; i < queries.Count; i++)
-            {
-                string query = queries[i];
-                QueryType queryType = GetQueryType(i, query);
-
-                bool queryWasSuccesful = PerformQuery(query, queryType);
-
-                if (queryWasSuccesful == false && StopOnError)
-                {
-                    logger.WriteLine($"\nStopped on query {i + 1} of {queries.Count}!", 1);
-                    break;
-                }
-
-                if (queryType.RequireDatabaseRefresh())
-                {
-                    requireRefresh = true;
-                }
-            }
-
-            //finish
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                IsQuerying = false; //we are not executing anymore
-                logger.Write("\n");
-                logger.Flush();
-                if (requireRefresh)
-                {
-                    currentDatabaseBranch = RefreshDatabaseConnection(currentDatabaseBranch);
-                }
-            }, DispatcherPriority.DataBind);
-
-        }
-
-        private DatabaseBranch RefreshDatabaseConnection(DatabaseBranch currentDatabaseBranch)
-        {
-            try
-            {
-                currentDatabaseBranch = CurrentConnection.GetDatabaseDescription();
-            }
-            catch (DatabaseDroppedException)
-            {
-                DatabasesTree.Remove(currentDatabaseBranch);
-                currentDatabaseBranch.Wrapper.IsChoosen = false;
-                CurrentConnection = null;
-            }
-
-            return currentDatabaseBranch;
-        }
-
-        private bool PerformQuery(string query, QueryType queryType)
-        {
-            try
-            {
-                //if true, we need to create new DataTable and add it to TabControl
-                if (queryType.YieldsTableOutput())
-                {
-                    TryExecuteCommandWithOutput(query, queryType);
-                }
-                else
-                {
-                    TryExecuteCommandWithNoOutput(query);
-                }
-
-                return true;
-            }
-            catch (Exception err)
-            {
-                logger.Write($"Error in current query: {err.Message}.", 1);
-                return false;
-            }
-        }
-
-        private QueryType GetQueryType(int index, string query)
-        {
-            QueryType queryType = QueryType.UNKNOWN;
-
-            try
-            {
-                //inform user that we recognized their input
-                queryType = SQLHelper.GetQueryType(query);
-                logger.Write($"{index + 1}) Query type is {queryType}, cool.", 1);
-            }
-            catch (ArgumentException)
-            {
-                logger.Write($"{index + 1}) Unrecognized query type {query}, gotta bad feelings 'bout this.", 1);
-            }
-
-            return queryType;
-        }
-
-        #region Executing SQL Command
-
-        private void TryExecuteCommandWithNoOutput(string query)
-        {
-            //just execute statement
-            int rows = CurrentConnection.ConnectionReference.ExecuteStatement(query);
-            logger.Write($"Query successful with {rows} results.", 1);
-            Application.Current.Dispatcher.Invoke(() => logger.Flush());
-        }
-
-        private void TryExecuteCommandWithOutput(string query, QueryType queryType)
-        {
-            var result = CurrentConnection.ConnectionReference.PerformSelect(query);
-
-            logger.Write($"Query successful with {result.Data.Count} results.", 1);
-
-            //dispatch new tab
-            Application.Current.Dispatcher.Invoke(new Action<QueryType, ResultContainer>((type, container) =>
-            {
-                tabController.Add(new TabContent(queryType.ToString(), result.ToDataTable()));
-                tabController.SelectedTab = Tabs.Back(); //select last tab
-                logger.Flush();
-            }), DispatcherPriority.DataBind, queryType, result);
-        } 
-
-        #endregion
 
         #region Command Callbacks
 
@@ -339,7 +145,6 @@ namespace WPFSQLPad.ViewModel
 
             //get separate queries
             var queries = SQLHelper.SplitSqlExpression(queryText, CurrentConnection.Delimiter);
-            //List<string> queries = new List<string>{ queryText };
 
             if (queries.Count == 0)
             {
@@ -352,7 +157,7 @@ namespace WPFSQLPad.ViewModel
                 {
                     tabController.CloseAllTabs();
                 }
-                ExecuteQueries(queries);
+                connectionContainer.ExecuteQueries(queries);
             }
         }
 
@@ -363,7 +168,7 @@ namespace WPFSQLPad.ViewModel
 
             if (dialog.ShowDialog() == true)
             {
-                AddDatabaseConnection(dialog.Connection, dialog.SetAsCurrent, dialog.DatabaseType);
+                connectionContainer.AddDatabaseConnection(dialog.Connection, dialog.SetAsCurrent, dialog.DatabaseType);
             }
         }
         
@@ -376,99 +181,12 @@ namespace WPFSQLPad.ViewModel
             var d = MessageBox.Show($"Remove {branch.DatabaseName} connection?", "SQL Pad", MessageBoxButton.YesNo);
             if (d == MessageBoxResult.Yes)
             {
-                RemoveConnection(branch);
-
-                logger.WriteLine($"Removed connection to {branch.DatabaseName}.");
-                logger.Flush();
+                connectionContainer.RemoveConnection(branch);
             }
         }
 
         #endregion
-
-        #region View Event Callbacks
-
-        //choose DB as current
-        private void ChooseDatabase(DatabaseConnectionWrapper choosenDatabase)
-        {
-            foreach (IMenuItem connection in Connections)
-            {
-                connection.IsChoosen = false;
-            }
-
-            choosenDatabase.IsChoosen = true;
-            CurrentConnection = choosenDatabase;
-
-            logger.WriteLine($"Set database to {choosenDatabase.Description}.");
-            logger.Flush();
-        }
-
-        //stop executing current command
-        private void StopExecuting()
-        {
-            if (queryThread != null)
-            {
-                queryThread.Abort();
-                logger.WriteLine("Stopped query thread.");
-                logger.Flush();
-                queryThread = null;
-            }
-        }
-
-        //refresh database connection
-        private void RefreshDatabase(DatabaseBranch branch)
-        {
-            try
-            {
-                DatabasesTree[DatabasesTree.IndexOf(branch)] = branch.Wrapper.GetDatabaseDescription();
-                logger.WriteLine($"Refreshed connection to {branch.Wrapper.ConnectionReference}.");
-            }
-            catch (DatabaseDroppedException)
-            {
-                logger.WriteLine("Connection closed!");
-                CloseDatabaseConnection(branch);
-                throw;
-            }
-            logger.Flush();
-        }
-
-        //remove connection using "Set as current" button
-        private void SetConnectionAsCurrent(DatabaseBranch branch)
-        {
-            CurrentConnection.IsChoosen = false;
-
-            CurrentConnection = branch.Wrapper;
-            branch.Wrapper.IsChoosen = true;
-        }
-
-        //close database connection
-        private void CloseDatabaseConnection(DatabaseBranch branch)
-        {
-            branch.Wrapper.CloseConnection();
-            DatabasesTree.Remove(branch);
-            logger.WriteLine($"Closed connection to {branch.Wrapper.ConnectionReference}.");
-            logger.Flush();
-        }
-
-        //copy routine source code to clipboard
-        private void CopyRoutineSource(Routine routine)
-        {
-            Clipboard.SetText(routine.Code);
-            logger.WriteLine("Log has been copied to clipboard.");
-            logger.Flush();
-        }
-
-        //close all connections...
-        private void CloseAllConnections()
-        {
-            CurrentConnection = null;
-            DatabasesTree.Clear();
-            Connections.Clear();
-            Connections.Add(new MenuItemPlaceholder());
-            logger.WriteLine("Closed all connections.");
-        }
-
-        #endregion
-
+        
         #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
