@@ -89,6 +89,7 @@
     <Compile Include="IMenuItems\IMenuItem.cs" />
     <Compile Include="IMenuItems\MenuItemPlaceholder.cs" />
     <Compile Include="TreeItems\Routine.cs" />
+    <Compile Include="TreeItems\TabController.cs" />
     <Compile Include="TreeItems\TableBranch.cs" />
     <Compile Include="ViewModel\ActionCommand.cs" />
     <Compile Include="View\AvailabilityToColorConverter.cs" />

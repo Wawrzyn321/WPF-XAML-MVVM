@@ -8,11 +8,13 @@ namespace WPFSQLPad.ViewModel
     public class Logger
     {
         private readonly StringBuilder logBuilder;
+        private readonly ILogRecipient logRecipient;
         private const string Indent = "\t";
 
-        public Logger()
+        public Logger(ILogRecipient logRecipient)
         {
             logBuilder = new StringBuilder(256);
+            this.logRecipient = logRecipient;
         }
 
         public void Write(string text, int indent = 0)
@@ -30,9 +32,12 @@ namespace WPFSQLPad.ViewModel
             logBuilder.Append("\n");
         }
 
-        public string Flush()
+        public void Flush()
         {
-            return logBuilder.ToString();
+            if (logRecipient != null)
+            {
+                logRecipient.Log = logBuilder.ToString();
+            }
         }
 
         public void Clear()

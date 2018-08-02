@@ -21,7 +21,7 @@ namespace WPFSQLPad.ViewModel
     /// <summary>
     /// ViewModel for main application
     /// </summary>
-    public class ViewModel : INotifyPropertyChanged
+    public class ViewModel : INotifyPropertyChanged, ILogRecipient
     {
         #region Observed properties
 
@@ -45,6 +45,7 @@ namespace WPFSQLPad.ViewModel
             get => log;
             set => Set(ref log, value);
         }
+
 
         private ObservableCollection<IMenuItem> connections;
         public ObservableCollection<IMenuItem> Connections
@@ -119,7 +120,7 @@ namespace WPFSQLPad.ViewModel
             this.view = view;
             StopOnError = true;
 
-            logger = new Logger();
+            logger = new Logger(this);
             AssignViewEvents();
             InitializeObservables();
             InitializeCommands();
@@ -222,7 +223,7 @@ namespace WPFSQLPad.ViewModel
                     ChooseDatabase(wrapper);
                 }
 
-                Log = logger.Flush();
+                logger.Flush();
                 return true;
             }
             else
@@ -267,7 +268,7 @@ namespace WPFSQLPad.ViewModel
             {
                 IsQuerying = false; //we are not executing anymore
                 logger.Write("\n");
-                Log = logger.Flush();
+                logger.Flush();
                 if (requireRefresh)
                 {
                     currentDatabaseBranch = RefreshDatabaseConnection(currentDatabaseBranch);
@@ -340,12 +341,12 @@ namespace WPFSQLPad.ViewModel
             //just execute statement
             int rows = CurrentConnection.ConnectionReference.ExecuteStatement(query);
             logger.Write($"Query successful with {rows} results.", 1);
-            Application.Current.Dispatcher.Invoke(() => Log = logger.Flush());
+            Application.Current.Dispatcher.Invoke(() => logger.Flush());
         }
 
         private void TryExecuteCommandWithOutput(string query, QueryType queryType)
         {
-            ResultContainer result = CurrentConnection.ConnectionReference.PerformSelect(query);
+            var result = CurrentConnection.ConnectionReference.PerformSelect(query);
 
             logger.Write($"Query successful with {result.Data.Count} results.", 1);
 
@@ -354,7 +355,7 @@ namespace WPFSQLPad.ViewModel
             {
                 Tabs.Add(new TabContent(queryType.ToString(), result.ToDataTable()));
                 SelectedTab = Tabs.Back(); //select last tab
-                Log = logger.Flush();
+                logger.Flush();
             }), DispatcherPriority.DataBind, queryType, result);
         } 
 
@@ -378,7 +379,7 @@ namespace WPFSQLPad.ViewModel
             if (queries.Count == 0)
             {
                 logger.Write("Ain't no queries here.\n");
-                Log = logger.Flush();
+                logger.Flush();
             }
             else
             {
@@ -394,7 +395,7 @@ namespace WPFSQLPad.ViewModel
         private void ClearLog_OnClick()
         {
             logger.Clear();
-            Log = logger.Flush();
+            logger.Flush();
         }
 
         //add new DB connection using DBCollectionDialog
@@ -413,7 +414,7 @@ namespace WPFSQLPad.ViewModel
         {
             Clipboard.SetText(Log);
             logger.WriteLine("Log has been copied to clipboard.");
-            Log = logger.Flush();
+            logger.Flush();
         }
 
         //remove connection using "Close connection" button
@@ -428,7 +429,7 @@ namespace WPFSQLPad.ViewModel
                 RemoveConnection(branch);
 
                 logger.WriteLine($"Removed connection to {branch.DatabaseName}.");
-                Log = logger.Flush();
+                logger.Flush();
             }
         }
 
@@ -448,7 +449,7 @@ namespace WPFSQLPad.ViewModel
             CurrentConnection = choosenDatabase;
 
             logger.WriteLine($"Set database to {choosenDatabase.Description}.");
-            Log = logger.Flush();
+            logger.Flush();
         }
 
         //close given result tab
@@ -468,7 +469,7 @@ namespace WPFSQLPad.ViewModel
             {
                 logger.WriteLine("\nCould not save XML file!.");
             }
-            Log = logger.Flush();
+            logger.Flush();
         }
 
         //export to CSV
@@ -482,7 +483,7 @@ namespace WPFSQLPad.ViewModel
             {
                 logger.WriteLine("\nCould not save CSV file!.");
             }
-            Log = logger.Flush();
+            logger.Flush();
         }
 
         //close all result tabs
@@ -490,7 +491,7 @@ namespace WPFSQLPad.ViewModel
         {
             Tabs.Clear();
             logger.WriteLine("Closed all tabs.");
-            Log = logger.Flush();
+            logger.Flush();
         }
 
         //stop executing current command
@@ -500,7 +501,7 @@ namespace WPFSQLPad.ViewModel
             {
                 queryThread.Abort();
                 logger.WriteLine("Stopped query thread.");
-                Log = logger.Flush();
+                logger.Flush();
                 queryThread = null;
             }
         }
@@ -519,7 +520,7 @@ namespace WPFSQLPad.ViewModel
                 CloseDatabaseConnection(branch);
                 throw;
             }
-            Log = logger.Flush();
+            logger.Flush();
         }
 
         //remove connection using "Set as current" button
@@ -537,7 +538,7 @@ namespace WPFSQLPad.ViewModel
             branch.Wrapper.CloseConnection();
             DatabasesTree.Remove(branch);
             logger.WriteLine($"Closed connection to {branch.Wrapper.ConnectionReference}.");
-            Log = logger.Flush();
+            logger.Flush();
         }
 
         //copy routine source code to clipboard
@@ -545,7 +546,7 @@ namespace WPFSQLPad.ViewModel
         {
             Clipboard.SetText(routine.Code);
             logger.WriteLine("Log has been copied to clipboard.");
-            Log = logger.Flush();
+            logger.Flush();
         }
 
         //close all connections...
