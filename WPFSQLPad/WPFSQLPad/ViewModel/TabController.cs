@@ -24,6 +24,13 @@ namespace WPFSQLPad.ViewModel
             set => Set(ref selectedTab, value);
         }
 
+        private bool clearPreviousResults;
+        public bool ClearPreviousResults
+        {
+            get => clearPreviousResults;
+            set => Set(ref clearPreviousResults, value);
+        }
+
         #endregion
 
         private readonly Logger logger;
@@ -48,7 +55,6 @@ namespace WPFSQLPad.ViewModel
         public void Add(TabContent tabContent)
         {
             Tabs.Add(tabContent);
-            SelectedTab = Tabs.Back(); //select last tab
         }
 
         #region Data Export

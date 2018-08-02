@@ -33,6 +33,13 @@ namespace WPFSQLPad.ViewModel
             set => tabController.SelectedTab = value;
         }
 
+        public bool ClearPreviousResults
+        {
+            get => tabController.ClearPreviousResults;
+            set => tabController.ClearPreviousResults = value;
+        }
+
+
         private string queryText;
         public string QueryText
         {
@@ -45,48 +52,6 @@ namespace WPFSQLPad.ViewModel
         {
             get => log;
             set => Set(ref log, value);
-        }
-
-        private ObservableCollection<IMenuItem> connections;
-        public ObservableCollection<IMenuItem> Connections
-        {
-            get => connections;
-            set => Set(ref connections, value);
-        }
-
-        private DatabaseConnectionWrapper currentConnection;
-        public DatabaseConnectionWrapper CurrentConnection
-        {
-            get => currentConnection;
-            set => Set(ref currentConnection, value);
-        }
-
-        private ObservableCollection<DatabaseBranch> databasesTree;
-        public ObservableCollection<DatabaseBranch> DatabasesTree
-        {
-            get => databasesTree;
-            set => Set(ref databasesTree, value);
-        }
-        
-        private bool clearPreviousResults;
-        public bool ClearPreviousResults
-        {
-            get => clearPreviousResults;
-            set => Set(ref clearPreviousResults, value);
-        }
-
-        private bool stopOnError;
-        public bool StopOnError
-        {
-            get => stopOnError;
-            set => Set(ref stopOnError, value);
-        } 
-
-        private bool isQuerying;
-        public bool IsQuerying
-        {
-            get => isQuerying;
-            set => Set(ref isQuerying, value);
         }
 
         #endregion
@@ -107,6 +72,7 @@ namespace WPFSQLPad.ViewModel
         private readonly Logger logger;
         private readonly IView view;
         private readonly TabController tabController;
+        private readonly ConnectionContainer connectionContainer;
         private Thread queryThread;
 
         public ViewModel(IView view)
@@ -116,6 +82,7 @@ namespace WPFSQLPad.ViewModel
 
             logger = new Logger(this);
             tabController = new TabController(logger);
+            connectionContainer = new ConnectionContainer(logger);
             AssignViewEvents();
             InitializeObservables();
             InitializeCommands();
@@ -352,6 +319,7 @@ namespace WPFSQLPad.ViewModel
             Application.Current.Dispatcher.Invoke(new Action<QueryType, ResultContainer>((type, container) =>
             {
                 tabController.Add(new TabContent(queryType.ToString(), result.ToDataTable()));
+                tabController.SelectedTab = Tabs.Back(); //select last tab
                 logger.Flush();
             }), DispatcherPriority.DataBind, queryType, result);
         } 
@@ -380,7 +348,7 @@ namespace WPFSQLPad.ViewModel
             }
             else
             {
-                if (ClearPreviousResults)
+                if (tabController.ClearPreviousResults)
                 {
                     tabController.CloseAllTabs();
                 }
