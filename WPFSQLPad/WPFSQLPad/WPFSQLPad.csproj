@@ -92,7 +92,6 @@
     <Compile Include="TreeItems\TableBranch.cs" />
     <Compile Include="ViewModel\ActionCommand.cs" />
     <Compile Include="ViewModel\ConnectionContainer.cs" />
-    <Compile Include="ViewModel\ILogRecipient.cs" />
     <Compile Include="ViewModel\TabController.cs" />
     <Compile Include="View\AvailabilityToColorConverter.cs" />
     <Compile Include="View\IView.cs" />
@@ -108,7 +107,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModel\Logger.cs" />
     <Page Include="Res\Converters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -152,6 +150,10 @@
     <ProjectReference Include="..\DatabaseConnectionDialog\DatabaseConnectionDialog.csproj">
       <Project>{ea4e3591-f3f9-4ff8-b4fe-6d80a71db043}</Project>
       <Name>DatabaseConnectionDialog</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{339ec89a-f05e-45cf-aeae-482753438ebe}</Project>
+      <Name>Logger</Name>
     </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{562319cf-38ad-42f8-b140-94c7042a92f0}</Project>

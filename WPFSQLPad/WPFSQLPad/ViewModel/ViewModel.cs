@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Model;
-using Model.ConnectionModels;
 using WPFSQLPad.ConnectionWrappers;
 using WPFSQLPad.IMenuItems;
 using WPFSQLPad.TreeItems;
@@ -21,7 +16,7 @@ namespace WPFSQLPad.ViewModel
     /// <summary>
     /// ViewModel for main application
     /// </summary>
-    public class ViewModel : INotifyPropertyChanged, ILogRecipient
+    public class ViewModel : INotifyPropertyChanged
     {
         #region Observed properties
 
@@ -74,9 +69,7 @@ namespace WPFSQLPad.ViewModel
         #region Commands
 
         public ICommand ExecuteSqlCommand { get; private set; }
-        public ICommand ClearLogCommand { get; private set; }
         public ICommand AddConnectionCommand { get; private set; }
-        public ICommand CopyLogCommand { get; private set; }
         public ICommand CloseCommand { get; private set; }
         public ICommand CloseConnectionCommand { get; private set; }
         public ICommand StopExecutingCommand { get; private set; }
@@ -84,18 +77,25 @@ namespace WPFSQLPad.ViewModel
 
         #endregion
 
-        private readonly Logger logger;
         private readonly IView view;
         private readonly TabController tabController;
         private readonly ConnectionContainer connectionContainer;
+
+        private Logger.LoggerView loggerView;
+        public Logger.LoggerView LoggerView
+        {
+            get => loggerView;
+            set => Set(ref loggerView, value);
+        } 
 
         public ViewModel(IView view)
         {
             this.view = view;
 
-            logger = new Logger(this);
-            tabController = new TabController(logger);
-            connectionContainer = new ConnectionContainer(logger, tabController);
+            LoggerView = new Logger.LoggerView();
+
+            tabController = new TabController(LoggerView.Logger);
+            connectionContainer = new ConnectionContainer(LoggerView.Logger, tabController);
             AssignViewEvents();
             InitializeCommands();
         }
@@ -119,9 +119,6 @@ namespace WPFSQLPad.ViewModel
         //initialize ICommands
         private void InitializeCommands()
         {
-            ClearLogCommand = new ActionCommand(logger.Clear);
-            CopyLogCommand = new ActionCommand(logger.CopyToClipboard);
-
             ExecuteSqlCommand = new ActionCommand(ExecuteQuery_OnClick, () => !IsQuerying);
             AddConnectionCommand = new ActionCommand(AddConnection_OnClick);
             CloseConnectionCommand = new ActionCommand(RemoveConnection_OnClick);
@@ -148,8 +145,7 @@ namespace WPFSQLPad.ViewModel
 
             if (queries.Count == 0)
             {
-                logger.Write("Ain't no queries here.\n");
-                logger.Flush();
+                LoggerView.Logger.Write("Ain't no queries here.\n");
             }
             else
             {
@@ -161,6 +157,7 @@ namespace WPFSQLPad.ViewModel
             }
         }
 
+        //#pure
         //add new DB connection using DBCollectionDialog
         private void AddConnection_OnClick()
         {
@@ -172,6 +169,7 @@ namespace WPFSQLPad.ViewModel
             }
         }
         
+        //#pure
         //remove connection using "Close connection" button
         private void RemoveConnection_OnClick()
         {

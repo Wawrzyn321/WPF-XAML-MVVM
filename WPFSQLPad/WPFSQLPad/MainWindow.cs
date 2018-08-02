@@ -40,14 +40,11 @@ namespace WPFSQLPad
         public ICommand CopyRoutineSourceCommand { get; private set; }
         public ICommand CloseAllConnectionsCommand { get; private set; }
 
-        private readonly ViewModel.ViewModel viewModel;
-
         public MainWindow()
         {
             InitializeComponent();
-
-            viewModel = new ViewModel.ViewModel(this);
-            DataContext = viewModel;
+            
+            DataContext = new ViewModel.ViewModel(this);
 
             InitializeCommands();
         }

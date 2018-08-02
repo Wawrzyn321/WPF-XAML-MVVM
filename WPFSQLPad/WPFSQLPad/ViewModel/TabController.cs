@@ -33,9 +33,9 @@ namespace WPFSQLPad.ViewModel
 
         #endregion
 
-        private readonly Logger logger;
+        private readonly Logger.LoggerViewModel logger;
 
-        public TabController(Logger logger)
+        public TabController(Logger.LoggerViewModel logger)
         {
             this.logger = logger;
             Tabs = new ObservableCollection<TabContent>();
@@ -69,7 +69,6 @@ namespace WPFSQLPad.ViewModel
             {
                 logger.WriteLine("\nCould not save XML file!.");
             }
-            logger.Flush();
         }
 
         public void ExportTabAsCsv(TabContent tabContent)
@@ -82,7 +81,6 @@ namespace WPFSQLPad.ViewModel
             {
                 logger.WriteLine("\nCould not save CSV file!.");
             }
-            logger.Flush();
         } 
 
         #endregion

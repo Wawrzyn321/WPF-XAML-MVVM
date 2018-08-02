@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:data="clr-namespace:System.Data;assembly=System.Data"
+    xmlns:logger="clr-namespace:Logger;assembly=Logger"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:treeItems="clr-namespace:WPFSQLPad.TreeItems"
     xmlns:view="clr-namespace:WPFSQLPad.View"
@@ -205,38 +206,10 @@
                 </StackPanel>
             </Grid>
 
-            <Grid
+            <ContentControl
                 Grid.Row="1"
                 Grid.Column="0"
-                Margin="0,0,0,8">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="1" MinHeight="40" />
-                </Grid.RowDefinitions>
-                <ScrollViewer Width="Auto" Margin="10">
-                    <TextBox
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        IsReadOnly="True"
-                        ScrollViewer.CanContentScroll="True"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto"
-                        Text="{Binding Log}"
-                        TextWrapping="Wrap" />
-                </ScrollViewer>
-                <WrapPanel
-                    Grid.Row="1"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                    <Button
-                        Command="{Binding CopyLogCommand}"
-                        Content="Copy log"
-                        Style="{StaticResource LogButtonsStyle}" />
-                    <Button
-                        Command="{Binding ClearLogCommand}"
-                        Content="Clear log"
-                        Style="{StaticResource LogButtonsStyle}" />
-                </WrapPanel>
-            </Grid>
+                Content="{Binding LoggerView}" />
 
             <TabControl
                 Grid.Row="1"
