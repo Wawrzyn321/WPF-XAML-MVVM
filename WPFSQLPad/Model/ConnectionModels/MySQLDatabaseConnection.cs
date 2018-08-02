@@ -14,16 +14,16 @@ namespace Model.ConnectionModels
         {
             Description = $"{server}: {database} (MySQL)";
 
-            CreateConnection();
+            CreateConnection(); //new SqlConnectionStringBuilder().new SqlConnectionStringBuilder().new SqlConnectionStringBuilder().new SqlConnectionStringBuilder().new SqlConnectionStringBuilder().cmd.StatementCompletedcmd.StatementCompletedcmd.StatementCompletedcmd.StatementCompletedcmd.StatementCompletedcmd.StatementCompleted
 
-            connectionCheck = new ExternalTimeDispatcher(this);
+             connectionCheck = new ExternalTimeDispatcher(this);
         }
 
         protected override void CreateConnection()
         {
             string connectionString = $"server={Server};database={Database};uid={UserId};pwd={password};sslmode=none";
             connection = new MySqlConnection(connectionString);
-
+            
             IsAvailable = OpenConnection();
         }
 

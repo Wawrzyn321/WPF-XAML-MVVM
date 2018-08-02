@@ -23,6 +23,8 @@ namespace WPFSQLPad
         public event Action OnCloseAllTabsRequested;
         public event Action<DatabaseBranch> OnDatabaseRefreshRequested;
         public event Action<DatabaseBranch> OnDatabaseCloseRequested;
+        public event Action<DatabaseBranch> OnSetDatabaseAsCurrentRequested;
+        public event Action OnCloseAllConnectionsRequested;
         public event Action<Routine> OnRoutineSourceRequested;
 
         public ICommand ChooseDatabaseCommand { get; private set; }
@@ -32,7 +34,9 @@ namespace WPFSQLPad
         public ICommand CloseAllTabsCommand { get; private set; }
         public ICommand RefreshDatabaseConnectionCommand { get; private set; }
         public ICommand CloseDatabaseConnectionCommand { get; private set; }
+        public ICommand SetConnectionAsCurrentCommand { get; private set; }
         public ICommand CopyRoutineSourceCommand { get; private set; }
+        public ICommand CloseAllConnectionsCommand { get; private set; }
 
         private readonly ViewModel.ViewModel viewModel;
 
@@ -55,7 +59,9 @@ namespace WPFSQLPad
             CloseAllTabsCommand = new ActionCommand(() => OnCloseAllTabsRequested?.Invoke());
             RefreshDatabaseConnectionCommand = new ActionCommand<DatabaseBranch>(branch => OnDatabaseRefreshRequested?.Invoke(branch));
             CloseDatabaseConnectionCommand = new ActionCommand<DatabaseBranch>(branch => OnDatabaseCloseRequested?.Invoke(branch));
+            SetConnectionAsCurrentCommand = new ActionCommand<DatabaseBranch>(branch => OnSetDatabaseAsCurrentRequested?.Invoke(branch));
             CopyRoutineSourceCommand = new ActionCommand<Routine>(routine => OnRoutineSourceRequested?.Invoke(routine));
+            CloseAllConnectionsCommand = new ActionCommand(() => OnCloseAllConnectionsRequested?.Invoke());
         }
     }
 

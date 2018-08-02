@@ -1,5 +1,4 @@
 ﻿using System;
-using Model.ConnectionModels;
 using WPFSQLPad.ConnectionWrappers;
 using WPFSQLPad.TreeItems;
 
@@ -31,10 +30,16 @@ namespace WPFSQLPad.View
         //refresh database connection
         event Action<DatabaseBranch> OnDatabaseRefreshRequested;
 
+        //set branch's connection as current
+        event Action<DatabaseBranch> OnSetDatabaseAsCurrentRequested;
+
         //close database connection
         event Action<DatabaseBranch> OnDatabaseCloseRequested;
 
         //get routine source code
         event Action<Routine> OnRoutineSourceRequested;
+
+        //gracefully finalize all connections
+        event Action OnCloseAllConnectionsRequested;
     }
 }

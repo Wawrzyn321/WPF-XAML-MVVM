@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Model.ConnectionModels;
 using WPFSQLPad.ConnectionWrappers;
 
 namespace WPFSQLPad.TreeItems
@@ -8,7 +7,7 @@ namespace WPFSQLPad.TreeItems
     /// <summary>
     /// Database branch for TreeView
     /// </summary>
-    public class DatabaseBranch : IEquatable<DatabaseBranch>
+    public sealed class DatabaseBranch : IEquatable<DatabaseBranch>
     {
         public string DatabaseName { get; }
         public TableHeader Tables { get; }
@@ -16,7 +15,7 @@ namespace WPFSQLPad.TreeItems
         public RoutineHeader Routines { get; }
         public List<HeaderBranch> AllChildren { get; } //tables and views are separated here
 
-        public DatabaseConnectionWrapper ConnectionReference { get; }
+        public DatabaseConnectionWrapper Wrapper { get; }
 
         public DatabaseBranch(string databaseName, 
             List<TableBranch> tables,
@@ -25,10 +24,10 @@ namespace WPFSQLPad.TreeItems
             DatabaseConnectionWrapper connection)
         {
             DatabaseName = databaseName;
-            Tables = new TableHeader("Tables", tables, connection);
-            Views = new TableHeader("Views", views, connection);
-            Routines = new RoutineHeader("Routines", routines, connection);
-            ConnectionReference = connection;
+            Tables = new TableHeader("Tables", tables);
+            Views = new TableHeader("Views", views);
+            Routines = new RoutineHeader("Routines", routines);
+            Wrapper = connection;
 
             AllChildren = new List<HeaderBranch>
             {

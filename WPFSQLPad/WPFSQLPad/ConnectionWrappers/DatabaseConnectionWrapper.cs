@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Model.ConnectionModels;
+using WPFSQLPad.ConnectionWrappers.DataExtractors;
+using WPFSQLPad.IMenuItems;
 using WPFSQLPad.TreeItems;
 
 namespace WPFSQLPad.ConnectionWrappers
@@ -25,7 +27,7 @@ namespace WPFSQLPad.ConnectionWrappers
 
         public string Description
         {
-            get => connectionReference.Description;
+            get => ConnectionReference.Description;
             set => throw new InvalidOperationException("DatabaseConnectionWrapper: cannot change database description!");
         }
 
@@ -38,28 +40,27 @@ namespace WPFSQLPad.ConnectionWrappers
             set => Set(ref isAvailable, value);
         }
 
-        public DbType DatabaseType => connectionReference.DatabaseType;
-        public string Delimiter => connectionReference.Delimiter;
-        public bool IsPerformingQuery => connectionReference.IsPerformingQuery;
+        public DbType DatabaseType => ConnectionReference.DatabaseType;
+        public string Delimiter => ConnectionReference.Delimiter;
+        public bool IsPerformingQuery => ConnectionReference.IsPerformingQuery;
 
         #endregion
 
-        public readonly DatabaseConnection connectionReference;
+        public readonly DatabaseConnection ConnectionReference;
         protected readonly ExternalTimeDispatcher connectionCheck;
-        protected readonly DatabaseDataExtractor dataExtrator;
+        protected DatabaseDataExtractor dataExtrator;
 
-        protected DatabaseConnectionWrapper(DatabaseConnection connectionReference, DatabaseDataExtractor dataExtractor)
+        protected DatabaseConnectionWrapper(DatabaseConnection connectionReference)
         {
-            this.connectionReference = connectionReference;
+            this.ConnectionReference = connectionReference;
         }
 
-        public abstract List<ColumnDescription> GetTableDescription(string tableName);
+        public bool CloseConnection()
+        {
+            return ConnectionReference.CloseConnection(true);
+        }
 
         public abstract DatabaseBranch GetDatabaseDescription();
-
-        public abstract List<Routine> GetRoutines();
-
-        public abstract string GetRoutineCode(Routine.RoutineType type, string name);
 
         #region INotifyPropertyChanged
 

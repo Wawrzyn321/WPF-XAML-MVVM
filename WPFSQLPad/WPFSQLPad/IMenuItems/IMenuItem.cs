@@ -1,4 +1,4 @@
-﻿namespace WPFSQLPad.TreeItems
+﻿namespace WPFSQLPad.IMenuItems
 {
     /// <summary>
     /// Contract for MenuItem objects.

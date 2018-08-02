@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using Model.ConnectionModels;
-using WPFSQLPad.ConnectionWrappers;
 
 namespace WPFSQLPad.TreeItems
 {
@@ -8,20 +6,19 @@ namespace WPFSQLPad.TreeItems
     /// Branch model for TreeView with name
     /// Used for Tables and views.
     /// </summary>
-    public class TableBranch : TreeItem
+    public sealed class TableBranch
     {
         public string TableName { get; }
+
         public List<ColumnDescription> Columns { get; }
 
-        public TableBranch(string tableName, IEnumerable<ColumnDescription> columns, DatabaseConnectionWrapper connection)
-        : base(connection)
+        public TableBranch(string tableName, IEnumerable<ColumnDescription> columns)
         {
             Columns = new List<ColumnDescription>(columns);
             TableName = tableName;
         }
 
-        public TableBranch(string tableName, List<ColumnDescription> columns, DatabaseConnectionWrapper connection)
-        : base(connection)
+        public TableBranch(string tableName, List<ColumnDescription> columns)
         {
             Columns = columns;
             TableName = tableName;

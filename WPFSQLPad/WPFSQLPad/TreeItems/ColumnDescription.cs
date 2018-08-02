@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using Model.ConnectionModels;
-using WPFSQLPad.ConnectionWrappers;
 
 namespace WPFSQLPad.TreeItems
 {
@@ -8,7 +6,7 @@ namespace WPFSQLPad.TreeItems
     /// Description of DB column filled with properties
     /// from result of DESC-like query.
     /// </summary>
-    public class ColumnDescription : TreeItem
+    public sealed class ColumnDescription
     {
         public const string CanBeNull_Yes = "YES";
 
@@ -19,8 +17,7 @@ namespace WPFSQLPad.TreeItems
         public string Default { get; set; }
         public string Extra { get; set; }
 
-        public ColumnDescription(string name, string type, bool canBeNull, string key, string defaultValue, string extra, DatabaseConnectionWrapper connection)
-            : base(connection)
+        public ColumnDescription(string name, string type, bool canBeNull, string key, string defaultValue, string extra)
         {
             Name = name;
             Type = type;
@@ -30,8 +27,7 @@ namespace WPFSQLPad.TreeItems
             Extra = extra;
         }
 
-        public ColumnDescription(string name, string type, bool canBeNull, DatabaseConnectionWrapper connection)
-            : base(connection)
+        public ColumnDescription(string name, string type, bool canBeNull)
         {
             Name = name;
             Type = type;
@@ -41,24 +37,24 @@ namespace WPFSQLPad.TreeItems
         public override string ToString()
         {
             //create a list of properties
-            List<string> list = new List<string>();
+            var columnProperties = new List<string>();
             if (!CanBeNull)
             {
-                list.Add("NOT NULL");
+                columnProperties.Add("NOT NULL");
             }
-            if (!string.IsNullOrEmpty(Key))
+            if (!string.IsNullOrWhiteSpace(Key))
             {
-                list.Add(Key);
+                columnProperties.Add(Key);
             }
-            if (!string.IsNullOrEmpty(Default))
+            if (!string.IsNullOrWhiteSpace(Default))
             {
-                list.Add("Default: " + Default);
+                columnProperties.Add("Default: " + Default);
             }
-            if (!string.IsNullOrEmpty(Extra))
+            if (!string.IsNullOrWhiteSpace(Extra))
             {
-                list.Add(Extra);
+                columnProperties.Add(Extra);
             }
-            return $"{Name}: {Type} ({string.Join(", ", list)})";
+            return $"{Name}: {Type} ({string.Join(", ", columnProperties)})";
         }
     }
 }

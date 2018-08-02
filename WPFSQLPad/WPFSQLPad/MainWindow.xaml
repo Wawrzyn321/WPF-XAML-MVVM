@@ -34,6 +34,7 @@
             DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Command="{Binding AddConnectionCommand}" Header="_Add connection" />
+                <MenuItem Command="{Binding CloseAllConnectionsCommand}" Header="C_lose all connections" />
                 <Separator />
                 <MenuItem Command="{Binding CloseCommand}" Header="_Close" />
             </MenuItem>
@@ -84,6 +85,10 @@
                                                         CommandParameter="{Binding}"
                                                         Header="Refresh" />
                                                     <MenuItem
+                                                        Command="{Binding Path=SetConnectionAsCurrentCommand, Source={x:Reference WPFWindow}}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Set as current" />
+                                                    <MenuItem
                                                         Command="{Binding Path=CloseDatabaseConnectionCommand, Source={x:Reference WPFWindow}}"
                                                         CommandParameter="{Binding}"
                                                         Header="Close this connection" />
@@ -97,7 +102,7 @@
                                     Width="8"
                                     Height="8"
                                     Margin="2,4,2,2"
-                                    Fill="{Binding ConnectedDBWrapper.IsAvailable, Converter={StaticResource AvailabilityToColorConverter}}" />
+                                    Fill="{Binding Wrapper.IsAvailable, Converter={StaticResource AvailabilityToColorConverter}}" />
                             </WrapPanel>
 
 
@@ -148,8 +153,8 @@
                         Content="Add connection"
                         Style="{StaticResource ConnectionButtonStyle}" />
                     <Button
-                        Command="{Binding RemoveConnectionCommand}"
-                        Content="Remove connection"
+                        Command="{Binding CloseConnectionCommand}"
+                        Content="Close connection"
                         Style="{StaticResource ConnectionButtonStyle}" />
                 </WrapPanel>
             </Grid>
