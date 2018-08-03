@@ -4,11 +4,14 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using DatabaseConnectionDialog.View;
 using Model;
+using QueryTabControl;
+using Logger;
 using WPFSQLPad.ConnectionWrappers;
 using WPFSQLPad.IMenuItems;
 using WPFSQLPad.TreeItems;
-using WPFSQLPad.View;
+using IView = WPFSQLPad.View.IView;
 
 namespace WPFSQLPad.ViewModel
 {
@@ -81,20 +84,29 @@ namespace WPFSQLPad.ViewModel
         private readonly TabController tabController;
         private readonly ConnectionContainer connectionContainer;
 
-        private Logger.LoggerView loggerView;
-        public Logger.LoggerView LoggerView
+        private LoggerView loggerView;
+        public LoggerView LoggerView
         {
             get => loggerView;
             set => Set(ref loggerView, value);
-        } 
+        }
+
+        private QueryTabView queryTabView;
+        public QueryTabView QueryTabView
+        {
+            get => queryTabView;
+            set => Set(ref queryTabView, value);
+        }
 
         public ViewModel(IView view)
         {
             this.view = view;
 
-            LoggerView = new Logger.LoggerView();
+            LoggerView = new LoggerView();
+            QueryTabView = new QueryTabView(LoggerView.Logger);
 
-            tabController = new TabController(LoggerView.Logger);
+            tabController = QueryTabView.TabController;
+
             connectionContainer = new ConnectionContainer(LoggerView.Logger, tabController);
             AssignViewEvents();
             InitializeCommands();
@@ -161,7 +173,7 @@ namespace WPFSQLPad.ViewModel
         //add new DB connection using DBCollectionDialog
         private void AddConnection_OnClick()
         {
-            var dialog = new DatabaseConnectionDialog.DbConnectionDialog();
+            var dialog = new DbConnectionDialog();
 
             if (dialog.ShowDialog() == true)
             {

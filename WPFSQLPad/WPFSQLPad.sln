@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Logger\Logger.csproj", "{339EC89A-F05E-45CF-AEAE-482753438EBE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryTabControl", "QueryTabControl\QueryTabControl.csproj", "{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{339EC89A-F05E-45CF-AEAE-482753438EBE}.Release|x64.Build.0 = Release|Any CPU
 		{339EC89A-F05E-45CF-AEAE-482753438EBE}.Release|x86.ActiveCfg = Release|Any CPU
 		{339EC89A-F05E-45CF-AEAE-482753438EBE}.Release|x86.Build.0 = Release|Any CPU
+		{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}.Debug|x64.Build.0 = Debug|Any CPU
+		{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}.Debug|x86.Build.0 = Debug|Any CPU
+		{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}.Release|x64.ActiveCfg = Release|Any CPU
+		{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}.Release|x64.Build.0 = Release|Any CPU
+		{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}.Release|x86.ActiveCfg = Release|Any CPU
+		{D66844AD-58C4-4C19-83C2-3A6F3EB9B1BA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

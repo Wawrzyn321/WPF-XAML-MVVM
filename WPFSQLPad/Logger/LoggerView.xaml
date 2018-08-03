@@ -15,7 +15,10 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="1" MinHeight="40" />
             </Grid.RowDefinitions>
-            <ScrollViewer Width="Auto" Margin="10">
+            <ScrollViewer
+                Width="Auto"
+                Margin="10"
+                local:AutomaticScroll.AutoScrollingEnabled="True">
                 <TextBox
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"

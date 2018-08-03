@@ -5,7 +5,7 @@ using System.Windows;
 using CsvHelper;
 using Microsoft.Win32;
 
-namespace Model
+namespace QueryTabControl
 {
     /// <summary>
     /// Class for saving DataTables to XML and CSV.

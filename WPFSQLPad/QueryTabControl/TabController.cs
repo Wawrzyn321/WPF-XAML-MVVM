@@ -1,10 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Model;
-using WPFSQLPad.View;
 
-namespace WPFSQLPad.ViewModel
+namespace QueryTabControl
 {
     public class TabController : INotifyPropertyChanged
     {

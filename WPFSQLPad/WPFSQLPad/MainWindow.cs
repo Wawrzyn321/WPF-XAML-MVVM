@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using QueryTabControl;
 using WPFSQLPad.ConnectionWrappers;
 using WPFSQLPad.TreeItems;
 using WPFSQLPad.View;

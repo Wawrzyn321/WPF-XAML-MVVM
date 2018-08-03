@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Security;
 using System.Windows;
-using DatabaseConnectionDialog.View;
 using Model.ConnectionModels;
 
-namespace DatabaseConnectionDialog
+namespace DatabaseConnectionDialog.View
 {
     /// <summary>
     /// Interaction logic for DbConnectionDialog.xaml

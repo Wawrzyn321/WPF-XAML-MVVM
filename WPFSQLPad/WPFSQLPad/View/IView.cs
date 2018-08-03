@@ -1,4 +1,5 @@
 ﻿using System;
+using QueryTabControl;
 using WPFSQLPad.ConnectionWrappers;
 using WPFSQLPad.TreeItems;
 

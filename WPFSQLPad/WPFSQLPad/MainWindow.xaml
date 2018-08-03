@@ -211,65 +211,45 @@
                 Grid.Column="0"
                 Content="{Binding LoggerView}" />
 
-            <TabControl
+            <ContentControl
                 Grid.Row="1"
                 Grid.Column="1"
-                Margin="10"
-                ItemsSource="{Binding Tabs}"
-                SelectedItem="{Binding SelectedTab, Mode=TwoWay}">
-                <TabControl.Resources>
-                    <DataTemplate DataType="{x:Type view:TabContent}" />
-                </TabControl.Resources>
-                <TabControl.ItemTemplate>
-                    <DataTemplate>
-                        <WrapPanel>
-                            <WrapPanel.Resources>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="ContextMenu">
-                                        <Setter.Value>
-                                            <ContextMenu>
-                                                <MenuItem
-                                                    Command="{Binding Path=ExportTabXMLCommand, Source={x:Reference WPFWindow}}"
-                                                    CommandParameter="{Binding}"
-                                                    Header="Export to XML" />
-                                                <MenuItem
-                                                    Command="{Binding Path=ExportTabCSVCommand, Source={x:Reference WPFWindow}}"
-                                                    CommandParameter="{Binding}"
-                                                    Header="Export to CSV" />
-                                                <MenuItem
-                                                    Command="{Binding Path=CloseTabCommand, Source={x:Reference WPFWindow}}"
-                                                    CommandParameter="{Binding}"
-                                                    Header="Close" />
-                                                <MenuItem Command="{Binding Path=CloseAllTabsCommand, Source={x:Reference WPFWindow}}" Header="Close all" />
-                                            </ContextMenu>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </WrapPanel.Resources>
-                            <TextBlock Margin="2,2,8,2" Text="{Binding QueryName}" />
-                            <Button
-                                Margin="2"
-                                Padding="4,1"
-                                Command="{Binding Path=CloseTabCommand, Source={x:Reference WPFWindow}}"
-                                CommandParameter="{Binding}"
-                                Content="X" />
-                        </WrapPanel>
-
-
-                    </DataTemplate>
-                </TabControl.ItemTemplate>
-                <TabControl.ContentTemplate>
-                    <DataTemplate DataType="data:DataTable">
-                        <DataGrid
-                            AutoGenerateColumns="True"
-                            IsReadOnly="True"
-                            ItemsSource="{Binding Data.DefaultView}" />
-                    </DataTemplate>
-                </TabControl.ContentTemplate>
-            </TabControl>
+                Content="{Binding QueryTabView}" />
         </Grid>
     </DockPanel>
 </Window>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
