@@ -53,6 +53,8 @@
 
         </Menu>
 
+
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*" />
@@ -63,7 +65,99 @@
                 <RowDefinition Height="5*" />
             </Grid.RowDefinitions>
 
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="1" MinHeight="40" />
+                </Grid.RowDefinitions>
+                <TreeView x:Name="DatabasesTree" ItemsSource="{Binding DatabasesTree}">
+                    <TreeView.Resources>
 
+                        <HierarchicalDataTemplate DataType="{x:Type treeItems:DatabaseBranch}" ItemsSource="{Binding AllChildren}">
+                            <WrapPanel>
+                                <WrapPanel.Resources>
+                                    <Style TargetType="{x:Type WrapPanel}">
+                                        <Setter Property="ContextMenu">
+                                            <Setter.Value>
+                                                <ContextMenu>
+                                                    <MenuItem
+                                                        Command="{Binding Path=RefreshDatabaseConnectionCommand, Source={x:Reference WPFWindow}}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Refresh" />
+                                                    <MenuItem
+                                                        Command="{Binding Path=SetConnectionAsCurrentCommand, Source={x:Reference WPFWindow}}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Set as current" />
+                                                    <MenuItem
+                                                        Command="{Binding Path=CloseDatabaseConnectionCommand, Source={x:Reference WPFWindow}}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Close this connection" />
+                                                </ContextMenu>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </WrapPanel.Resources>
+                                <TextBlock FontWeight="Bold" Text="{Binding DatabaseName}" />
+                                <Ellipse
+                                    Width="8"
+                                    Height="8"
+                                    Margin="2,4,2,2"
+                                    Fill="{Binding Wrapper.IsAvailable, Converter={StaticResource AvailabilityToColorConverter}}" />
+                            </WrapPanel>
+
+
+
+                        </HierarchicalDataTemplate>
+
+                        <HierarchicalDataTemplate DataType="{x:Type treeItems:HeaderBranch}" ItemsSource="{Binding Tables}">
+                            <TextBlock Text="{Binding HeaderName}" />
+                        </HierarchicalDataTemplate>
+
+                        <HierarchicalDataTemplate DataType="{x:Type treeItems:TableBranch}" ItemsSource="{Binding Columns}">
+                            <TextBlock Text="{Binding TableName}" />
+                        </HierarchicalDataTemplate>
+
+                        <HierarchicalDataTemplate DataType="{x:Type treeItems:RoutineHeader}" ItemsSource="{Binding Routines}">
+                            <TextBlock Text="{Binding HeaderName}" />
+                        </HierarchicalDataTemplate>
+
+                        <HierarchicalDataTemplate DataType="{x:Type treeItems:Routine}">
+                            <TextBlock Text="{Binding}">
+                                <TextBlock.Resources>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="ContextMenu">
+                                            <Setter.Value>
+                                                <ContextMenu>
+                                                    <MenuItem
+                                                        Command="{Binding Path=CopyRoutineSourceCommand, Source={x:Reference WPFWindow}}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Copy source to clipboard" />
+                                                </ContextMenu>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TextBlock.Resources>
+                            </TextBlock>
+                        </HierarchicalDataTemplate>
+
+                        <HierarchicalDataTemplate DataType="{x:Type treeItems:TableHeader}" ItemsSource="{Binding Items}">
+                            <TextBlock Text="{Binding HeaderName}" />
+                        </HierarchicalDataTemplate>
+
+                    </TreeView.Resources>
+                </TreeView>
+
+                <WrapPanel Grid.Row="1" HorizontalAlignment="Center">
+                    <Button
+                        Command="{Binding AddConnectionCommand}"
+                        Content="Add connection"
+                        Style="{StaticResource ConnectionButtonStyle}" />
+                    <Button
+                        Command="{Binding CloseConnectionCommand}"
+                        Content="Close connection"
+                        Style="{StaticResource ConnectionButtonStyle}" />
+                </WrapPanel>
+            </Grid>
 
             <Grid Grid.Row="0" Grid.Column="1">
                 <Grid.ColumnDefinitions>
@@ -121,10 +215,6 @@
                 Grid.Column="1"
                 Content="{Binding QueryTabView}" />
 
-            <ContentControl
-                Grid.Row="0"
-                Grid.Column="0"
-                Content="{Binding DatabaseTree}" />
         </Grid>
     </DockPanel>
 </Window>
