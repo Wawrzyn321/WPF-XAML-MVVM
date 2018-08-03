@@ -6,7 +6,7 @@ namespace Logger
     public static class AutomaticScroll
     {
         public static readonly DependencyProperty AutoScrollProperty =
-            DependencyProperty.RegisterAttached("AutoScrollingEnabled", typeof(bool), typeof(AutomaticScroll), 
+            DependencyProperty.RegisterAttached("AutoScroll", typeof(bool), typeof(AutomaticScroll), 
                 new PropertyMetadata(false, AutoScrollPropertyChanged));
 
 

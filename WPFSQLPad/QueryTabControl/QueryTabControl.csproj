@@ -52,8 +52,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTableSerializer.cs" />
+    <Compile Include="IQuertyTabViewModel.cs" />
+    <Compile Include="IQueryTabView.cs" />
     <Compile Include="TabContent.cs" />
-    <Compile Include="TabController.cs" />
+    <Compile Include="QuertyTabViewModel.cs" />
     <Page Include="QueryTabView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

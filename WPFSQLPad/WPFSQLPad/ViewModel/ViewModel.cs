@@ -23,18 +23,19 @@ namespace WPFSQLPad.ViewModel
     {
         #region Observed properties
 
-        public ObservableCollection<TabContent> Tabs => tabController.Tabs;
+        public ObservableCollection<TabContent> Tabs => quertyTabViewModel.Tabs;
 
         public TabContent SelectedTab
         {
-            get => tabController.SelectedTab;
-            set => tabController.SelectedTab = value;
+            get => quertyTabViewModel.SelectedTab;
+            set => quertyTabViewModel.SelectedTab = value;
         }
 
+        private bool clearPreviousResults;
         public bool ClearPreviousResults
         {
-            get => tabController.ClearPreviousResults;
-            set => tabController.ClearPreviousResults = value;
+            get => clearPreviousResults;
+            set => Set(ref clearPreviousResults, value);
         }
 
         private string queryText;
@@ -81,7 +82,7 @@ namespace WPFSQLPad.ViewModel
         #endregion
 
         private readonly IView view;
-        private readonly TabController tabController;
+        private readonly IQuertyTabViewModel quertyTabViewModel;
         private readonly ConnectionContainer connectionContainer;
 
         private LoggerView loggerView;
@@ -91,8 +92,8 @@ namespace WPFSQLPad.ViewModel
             set => Set(ref loggerView, value);
         }
 
-        private QueryTabView queryTabView;
-        public QueryTabView QueryTabView
+        private IQueryTabView queryTabView;
+        public IQueryTabView QueryTabView
         {
             get => queryTabView;
             set => Set(ref queryTabView, value);
@@ -105,9 +106,9 @@ namespace WPFSQLPad.ViewModel
             LoggerView = new LoggerView();
             QueryTabView = new QueryTabView(LoggerView.Logger);
 
-            tabController = QueryTabView.TabController;
+            quertyTabViewModel = QueryTabView.ViewModel;
 
-            connectionContainer = new ConnectionContainer(LoggerView.Logger, tabController);
+            connectionContainer = new ConnectionContainer(LoggerView.Logger, quertyTabViewModel);
             AssignViewEvents();
             InitializeCommands();
         }
@@ -115,11 +116,6 @@ namespace WPFSQLPad.ViewModel
         //subscribe to view events
         private void AssignViewEvents()
         {
-            view.OnCloseTabRequested += tabController.CloseTab;
-            view.OnCloseAllTabsRequested += tabController.CloseAllTabs;
-            view.OnExportTabXMLRequested += tabController.ExportTabAsXml;
-            view.OnExportTabCSVRequested += tabController.ExportTabAsCsv;
-
             view.OnDatabaseChoiceRequested += connectionContainer.ChooseDatabase;
             view.OnDatabaseRefreshRequested += connectionContainer.RefreshDatabase;
             view.OnSetDatabaseAsCurrentRequested += connectionContainer.SetConnectionAsCurrent;
@@ -161,9 +157,9 @@ namespace WPFSQLPad.ViewModel
             }
             else
             {
-                if (tabController.ClearPreviousResults)
+                if (ClearPreviousResults)
                 {
-                    tabController.CloseAllTabs();
+                    quertyTabViewModel.CloseAllTabs();
                 }
                 connectionContainer.ExecuteQueries(queries);
             }

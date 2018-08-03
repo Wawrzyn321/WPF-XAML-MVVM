@@ -1,10 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Logger;
 
 namespace QueryTabControl
 {
-    public class TabController : INotifyPropertyChanged
+    public class QuertyTabViewModel : IQuertyTabViewModel
     {
         #region Observed Properties
 
@@ -22,21 +23,24 @@ namespace QueryTabControl
             set => Set(ref selectedTab, value);
         }
 
-        private bool clearPreviousResults;
-        public bool ClearPreviousResults
-        {
-            get => clearPreviousResults;
-            set => Set(ref clearPreviousResults, value);
-        }
-
         #endregion
 
-        private readonly Logger.LoggerViewModel logger;
+        private readonly LoggerViewModel logger;
 
-        public TabController(Logger.LoggerViewModel logger)
+        public QuertyTabViewModel(LoggerViewModel logger, IQueryTabView view)
         {
             this.logger = logger;
             Tabs = new ObservableCollection<TabContent>();
+
+            AssignEventsToView(view);
+        }
+
+        private void AssignEventsToView(IQueryTabView view)
+        {
+            view.OnCloseTabRequested += CloseTab;
+            view.OnCloseAllTabsRequested += CloseAllTabs;
+            view.OnExportTabXMLRequested += ExportTabAsXml;
+            view.OnExportTabCSVRequested += ExportTabAsCsv;
         }
 
         public void CloseTab(TabContent tab)
@@ -65,7 +69,7 @@ namespace QueryTabControl
             }
             else
             {
-                logger.WriteLine("\nCould not save XML file!.");
+                logger.WriteLine("\nCould not save XML file.");
             }
         }
 
@@ -77,7 +81,7 @@ namespace QueryTabControl
             }
             else
             {
-                logger.WriteLine("\nCould not save CSV file!.");
+                logger.WriteLine("\nCould not save CSV file.");
             }
         } 
 

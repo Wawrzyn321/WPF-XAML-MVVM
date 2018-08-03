@@ -18,7 +18,7 @@
             <ScrollViewer
                 Width="Auto"
                 Margin="10"
-                local:AutomaticScroll.AutoScrollingEnabled="True">
+                local:AutomaticScroll.AutoScroll="True">
                 <TextBox
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"

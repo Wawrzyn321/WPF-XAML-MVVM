@@ -52,7 +52,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="ActionCommand.cs" />
-    <Compile Include="AutoScroll.cs" />
+    <Compile Include="AutomaticScroll.cs" />
     <Compile Include="LogContainer.cs" />
     <Compile Include="LoggerView.xaml.cs">
       <DependentUpon>LoggerView.xaml</DependentUpon>

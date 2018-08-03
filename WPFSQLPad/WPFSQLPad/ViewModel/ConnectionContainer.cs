@@ -55,13 +55,13 @@ namespace WPFSQLPad.ViewModel
         }
 
         private readonly Logger.LoggerViewModel logger;
-        private readonly TabController tabController;
+        private readonly IQuertyTabViewModel quertyTabViewModel;
         private Thread queryThread;
 
-        public ConnectionContainer(Logger.LoggerViewModel logger, TabController tabController)
+        public ConnectionContainer(Logger.LoggerViewModel logger, IQuertyTabViewModel quertyTabViewModel)
         {
             this.logger = logger;
-            this.tabController = tabController;
+            this.quertyTabViewModel = quertyTabViewModel;
             DatabasesTree = new ObservableCollection<DatabaseBranch>();
             Connections = new ObservableCollection<IMenuItem> { new MenuItemPlaceholder() };
             StopOnError = true;
@@ -341,8 +341,8 @@ namespace WPFSQLPad.ViewModel
             //dispatch new tab
             Application.Current.Dispatcher.Invoke(new Action<QueryType, ResultContainer>((type, container) =>
             {
-                tabController.Add(new TabContent(queryType.ToString(), result.ToDataTable()));
-                tabController.SelectedTab = tabController.Tabs.Back(); //select last tab
+                quertyTabViewModel.Add(new TabContent(queryType.ToString(), result.ToDataTable()));
+                quertyTabViewModel.SelectedTab = quertyTabViewModel.Tabs.Back(); //select last tab
             }), DispatcherPriority.DataBind, queryType, result);
         }
 
