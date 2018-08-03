@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace QueryTabControl
+namespace QueryTabControl.Interface
 {
     public interface IQuertyTabViewModel : INotifyPropertyChanged
     {

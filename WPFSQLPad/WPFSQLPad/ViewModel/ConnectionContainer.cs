@@ -10,6 +10,7 @@ using System.Windows.Threading;
 using Model;
 using Model.ConnectionModels;
 using QueryTabControl;
+using QueryTabControl.Interface;
 using WPFSQLPad.ConnectionWrappers;
 using WPFSQLPad.IMenuItems;
 using WPFSQLPad.TreeItems;

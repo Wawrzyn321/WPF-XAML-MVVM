@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using Logger;
+using QueryTabControl.Interface;
 
 namespace QueryTabControl
 {

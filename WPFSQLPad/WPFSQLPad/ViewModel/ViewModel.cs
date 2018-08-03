@@ -4,14 +4,13 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using DatabaseConnectionDialog.View;
 using Model;
 using QueryTabControl;
-using Logger;
+using QueryTabControl.Interface;
 using WPFSQLPad.ConnectionWrappers;
 using WPFSQLPad.IMenuItems;
 using WPFSQLPad.TreeItems;
-using IView = WPFSQLPad.View.IView;
+using WPFSQLPad.View;
 
 namespace WPFSQLPad.ViewModel
 {
@@ -85,8 +84,8 @@ namespace WPFSQLPad.ViewModel
         private readonly IQuertyTabViewModel quertyTabViewModel;
         private readonly ConnectionContainer connectionContainer;
 
-        private LoggerView loggerView;
-        public LoggerView LoggerView
+        private Logger.LoggerView loggerView;
+        public Logger.LoggerView LoggerView
         {
             get => loggerView;
             set => Set(ref loggerView, value);
@@ -103,7 +102,7 @@ namespace WPFSQLPad.ViewModel
         {
             this.view = view;
 
-            LoggerView = new LoggerView();
+            LoggerView = new Logger.LoggerView();
             QueryTabView = new QueryTabView(LoggerView.Logger);
 
             quertyTabViewModel = QueryTabView.ViewModel;
@@ -169,7 +168,7 @@ namespace WPFSQLPad.ViewModel
         //add new DB connection using DBCollectionDialog
         private void AddConnection_OnClick()
         {
-            var dialog = new DbConnectionDialog();
+            var dialog = new DatabaseConnectionDialog.View.DbConnectionDialog();
 
             if (dialog.ShowDialog() == true)
             {
@@ -184,8 +183,8 @@ namespace WPFSQLPad.ViewModel
             //check if a DatabaseBranch is actually selected
             if (!(view.SelectedTreeItem is DatabaseBranch branch)) return;
 
-            var d = MessageBox.Show($"Remove {branch.DatabaseName} connection?", "SQL Pad", MessageBoxButton.YesNo);
-            if (d == MessageBoxResult.Yes)
+            var messageBox = MessageBox.Show($"Remove {branch.DatabaseName} connection?", "SQL Pad", MessageBoxButton.YesNo);
+            if (messageBox == MessageBoxResult.Yes)
             {
                 connectionContainer.RemoveConnection(branch);
             }

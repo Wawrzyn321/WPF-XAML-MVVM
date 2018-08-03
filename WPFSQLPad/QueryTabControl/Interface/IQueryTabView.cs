@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QueryTabControl
+namespace QueryTabControl.Interface
 {
     public interface IQueryTabView
     {
