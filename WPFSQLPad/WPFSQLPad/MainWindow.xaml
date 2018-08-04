@@ -3,11 +3,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:data="clr-namespace:System.Data;assembly=System.Data"
-    xmlns:logger="clr-namespace:Logger;assembly=Logger"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:treeItems="clr-namespace:WPFSQLPad.TreeItems"
-    xmlns:view="clr-namespace:WPFSQLPad.View"
     x:Name="WPFWindow"
     Title="WPF SQLPad"
     Width="900"
@@ -50,19 +47,18 @@
                     </Style>
                 </MenuItem.ItemContainerStyle>
             </MenuItem>
-
         </Menu>
-
-
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="3*" MinWidth="300" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="5*" MinWidth="200" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="3*" />
-                <RowDefinition Height="5*" />
+                <RowDefinition Height="3*" MinHeight="200" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="5*" MinHeight="150" />
             </Grid.RowDefinitions>
 
             <Grid Margin="10">
@@ -159,10 +155,10 @@
                 </WrapPanel>
             </Grid>
 
-            <Grid Grid.Row="0" Grid.Column="1">
+            <Grid Grid.Row="0" Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="5*" />
-                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
 
                 <ScrollViewer Grid.Column="0" Padding="10">
@@ -205,79 +201,30 @@
                 </StackPanel>
             </Grid>
 
-            <ContentControl
+            <GridSplitter
+                Grid.Row="0"
+                Grid.RowSpan="3"
+                Grid.Column="1"
+                Width="5"
+                HorizontalAlignment="Stretch" />
+
+            <GridSplitter
                 Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Height="5"
+                HorizontalAlignment="Stretch" />
+
+            <ContentControl
+                Grid.Row="2"
                 Grid.Column="0"
                 Content="{Binding LoggerView}" />
 
             <ContentControl
-                Grid.Row="1"
-                Grid.Column="1"
+                Grid.Row="2"
+                Grid.Column="2"
                 Content="{Binding QueryTabView}" />
 
         </Grid>
     </DockPanel>
 </Window>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

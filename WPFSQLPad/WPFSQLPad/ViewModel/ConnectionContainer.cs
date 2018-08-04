@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -188,6 +189,7 @@ namespace WPFSQLPad.ViewModel
         //add new connection
         public bool AddDatabaseConnection(DatabaseConnection newConnection, bool setAsCurrent, DbType databaseType)
         {
+            Debug.WriteLine(setAsCurrent);
             DatabaseConnectionWrapper wrapper = null;
 
             switch (databaseType)
